@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'api',
     'products',
     'users',
+    'rest_framework_simplejwt',
 ]
  
 MIDDLEWARE = [
@@ -129,3 +130,12 @@ MEDIA_URL ='/media/'
 MEDIA_ROOT= BASE_DIR/'media'
 
 AUTH_USER_MODEL = "users.User"
+
+REST_FRAMEWORK = {
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+    
+}

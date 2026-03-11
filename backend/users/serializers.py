@@ -3,7 +3,7 @@ from .models import User
 from django.contrib.auth import authenticate
 
 
-class UserSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
 
     class Meta:

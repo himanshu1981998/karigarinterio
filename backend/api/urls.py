@@ -5,6 +5,7 @@ from .views import (
     ProductListCreateView,
     ProductDetailView,
 )
+from .views import RegisterView, LoginView
 
 urlpatterns = [
     path("categories/", CategoryListCreateView.as_view(), name="category-list-create"),
@@ -12,4 +13,7 @@ urlpatterns = [
 
     path("products/", ProductListCreateView.as_view(), name="product-list-create"),
     path("products/<int:pk>/", ProductDetailView.as_view(), name="product-detail"),
+
+    path("register/", RegisterView.as_view(), name="register"),
+    path("login/", LoginView.as_view(), name="login"),
 ]

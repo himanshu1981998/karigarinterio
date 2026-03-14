@@ -37,7 +37,7 @@ const ProductCard = ({product}) => {
         </h3>
 
         <p className="text-xl font-bold tracking-tight text-zinc-900">
-          £{product.price}
+          ₹{product.price}
         </p>
       </CardContent>
 

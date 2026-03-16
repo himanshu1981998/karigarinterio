@@ -6,8 +6,18 @@ export const useCartStore = create(
     (set, get) => ({
       items: [],
       isCartOpen:false,
+      cartBump:false,
+      isLoggedIn:false,
       openCart: ()=>set({isCartOpen:true}),
       closeCart: ()=>set({isCartOpen:false}),
+      
+      logIn:()=>set({isLoggedIn:true}),
+      logOut:()=>set({isLoggedIn:false}),
+
+       triggerCartBump: () => {
+        set({ cartBump: true })
+        setTimeout(() => set({ cartBump: false }), 300)
+      },
 
       addToCart: (product) =>
         set((state) => {

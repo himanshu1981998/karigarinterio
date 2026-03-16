@@ -10,9 +10,10 @@ import { useCartStore } from "@/store/cartStore"
 
 const Header=()=> {
  const openCart = useCartStore((state) => state.openCart)
-
- const isLoggedIn=true
- 
+const totalItems = useCartStore((state) => state.items.reduce((total, item) => total + item.quantity, 0))
+const cartBump=useCartStore((state)=>state.cartBump)
+ const isLoggedIn = useCartStore((state) => state.isLoggedIn)
+ console.log(isLoggedIn)
 
 
   return (
@@ -43,11 +44,20 @@ const Header=()=> {
     
 
           {/* Cart */}
-          <Button variant="ghost" size="icon" onClick={openCart}>
+          <Button 
+              variant="ghost"
+              size="icon"
+              className={`relative transition-transform duration-300 ${cartBump ? "scale-125" : "scale-100"}`}
+              onClick={openCart}
+              >
             <ShoppingBag className="h-5 w-5" />
-            <span className="sr-only">Open cart</span>
+               {totalItems> 0 && (
+                     <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+                      {totalItems> 99 ? "99+" : totalItems}
+                     </span>
+                )}
           </Button>
-
+            
                 {/*change of button accorind to logged in or not*/}
                  {isLoggedIn ? <UserDropdown /> : 
                  <LoginPage>

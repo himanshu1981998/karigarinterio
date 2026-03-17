@@ -126,3 +126,35 @@
     @apply bg-background text-foreground;
     }
 }
+
+
+/* Thin scrollbar - hidden by default */
+.scrollbar-hover::-webkit-scrollbar {
+  width: 0px;
+  transition: width 0.3s ease;
+}
+
+/* Show scrollbar on hover */
+.scrollbar-hover:hover::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Scroll thumb */
+.scrollbar-hover::-webkit-scrollbar-thumb {
+  background: #e2e2e9; /* zinc-400 */
+  border-radius: 9999px;
+}
+
+/* Track (optional) */
+.scrollbar-hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox support */
+.scrollbar-hover {
+  scrollbar-width: none;
+}
+
+.scrollbar-hover:hover {
+  scrollbar-width: thin;
+}

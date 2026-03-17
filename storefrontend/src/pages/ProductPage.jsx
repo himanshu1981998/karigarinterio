@@ -13,16 +13,15 @@ const product=products.find((p)=>p.slug===slug)
 if (!product) {
     return <h2>Product not found</h2>
   }
-  
+
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      <div className="grid gap-10 lg:grid-cols-2">
+    <div className="mx-auto max-w-7xl px-4 py-6  sm:px-6 lg:px-8 lg:py-10">
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 ">
         <ProductImageGallery images={product.images} />
         <ProductInfo product={product} />
       </div>
 
-     {/* PRODUCT DESCRIPTION TABS */}
-      <ProductTabs product={product} />
+
 
       {/* RELATED PRODUCTS */}
       <RelatedProducts />

@@ -27,6 +27,12 @@ const products = [
       "https://images.unsplash.com/photo-1582582494700-1a0b3c5d4b42",
       "https://images.unsplash.com/photo-1616627561839-074385245ff6",
       "https://images.unsplash.com/photo-1600210492486-724fe5c67fb3",
+      "image5",
+       "image6",
+       "image7",
+       "image9",
+       "image8",
+       "image79"
     ],
   },
   {

@@ -52,13 +52,13 @@ const cartBump=useCartStore((state)=>state.cartBump)
               >
             <ShoppingBag className="h-5 w-5" />
                {totalItems> 0 && (
-                     <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+                     <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#8B5E3C] text-white hover:bg-[#7A5234] text-xs">
                       {totalItems> 99 ? "99+" : totalItems}
                      </span>
                 )}
           </Button>
             
-                {/*change of button accorind to logged in or not*/}
+                {/*change of button according to logged in or not*/}
                  {isLoggedIn ? <UserDropdown /> : 
                  <LoginPage>
                     <Button variant="ghost" size="icon">

@@ -42,7 +42,7 @@ const ProductCard = ({product}) => {
       {/* Image */}
       <div className="relative overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-50 aspect-[4/5]">
         <img
-          src={product.image}
+          src={product.images?.[0]}
           alt={product.name}
           className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
         />

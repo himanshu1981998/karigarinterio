@@ -1,84 +1,95 @@
-from rest_framework import generics
-from products.models import Category, Product
-from users.models import User
-from users.serializers import RegisterSerializer, LoginSerializer
-from products.serializers import CategorySerializer, ProductSerializer
-from rest_framework.views import APIView
+from django.conf import settings
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
+
+from users.models import Profile, Address
+from users.serializers import (
+    OTPSendSerializer,
+    OTPVerifySerializer,
+    ProfileSerializer,
+    AddressSerializer,
+)
 
 
-class CategoryListCreateView(generics.ListCreateAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+class SendOTPView(generics.GenericAPIView):
+    serializer_class = OTPSendSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        otp = serializer.save()
+
+        response_data = {
+            "message": "OTP sent successfully.",
+            "phone": otp.phone,
+        }
+
+        # only for local development
+        if settings.DEBUG:
+            response_data["otp"] = otp.code
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
-class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+class VerifyOTPView(generics.GenericAPIView):
+    serializer_class = OTPVerifySerializer
+    permission_classes = [permissions.AllowAny]
 
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
 
-class ProductListCreateView(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-
-        if serializer.is_valid():
-            user = serializer.save()
-
-            refresh = RefreshToken.for_user(user)
-
-            return Response(
-                {
-                    "message": "User registered successfully.",
-                    "user": {
-                        "id": user.id,
-                        "first_name": user.first_name,
-                        "last_name": user.last_name,
-                        "email": user.email,
-                        "phone_number": user.phone_number,
-                    },
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
+        return Response(
+            {
+                "message": "OTP verified successfully.",
+                "user": {
+                    "id": user.id,
+                    "phone": user.phone,
+                    "is_phone_verified": user.is_phone_verified,
                 },
-                status=status.HTTP_201_CREATED,
-            )
+            },
+            status=status.HTTP_200_OK,
+        )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        profile, _ = Profile.objects.get_or_create(
+            user=self.request.user,
+            defaults={
+                "full_name": "",
+                "contact_number": self.request.user.phone,
+            },
+        )
+        return profile
 
 
-class LoginView(APIView):
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
+class AddressListCreateView(generics.ListCreateAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-        if serializer.is_valid():
-            user = serializer.validated_data["user"]
-            refresh = RefreshToken.for_user(user)
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user).order_by("-is_default", "-created_at")
 
-            return Response(
-                {
-                    "message": "Login successful.",
-                    "user": {
-                        "id": user.id,
-                        "first_name": user.first_name,
-                        "last_name": user.last_name,
-                        "email": user.email,
-                        "phone_number": user.phone_number,
-                    },
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                },
-                status=status.HTTP_200_OK,
-            )
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+
+class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context

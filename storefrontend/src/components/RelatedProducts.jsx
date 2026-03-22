@@ -11,7 +11,7 @@ const RelatedProducts = () => {
 
   return (
     <section>
-      <h2 className="mb-6 text-2xl font-semibold">
+      <h2 className="mb-6 mt-10 text-2xl font-semibold">
         You may also like
       </h2>
 

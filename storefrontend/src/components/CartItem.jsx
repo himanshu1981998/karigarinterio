@@ -7,16 +7,12 @@ export function CartItem({ item }) {
   const increaseQuantity = useCartStore((state) => state.increaseQuantity)
   const decreaseQuantity = useCartStore((state) => state.decreaseQuantity)
 
-  const savedAmount =
-  item.originalPrice && item.originalPrice > item.price
-    ? (item.originalPrice - item.price) * item.quantity
-    : 0
 
   const discountPercent =
      item.originalPrice && item.originalPrice > item.price
       ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)
         : 0
-
+    
   return (
     <div className="flex gap-3 rounded-xl border border-zinc-200 bg-white p-3 shadow-sm">
       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
@@ -43,13 +39,13 @@ export function CartItem({ item }) {
          <div className="mt-1.5">
            {item.originalPrice && item.originalPrice > item.price && (
            <p className="text-xs text-zinc-400 line-through">
-               ₹{item.originalPrice.toLocaleString()}
+               ₹{item.originalPrice?item.originalPrice.toLocaleString():0}
             </p>
              )}
 
          <div className="flex items-center gap-2">
            <p className="text-lg font-bold text-zinc-900">
-               ₹{item.price.toLocaleString()}
+               ₹{item.price?item.price.toLocaleString():0}
                 </p>
 
              {discountPercent > 0 && (

@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useCartStore } from "@/store/cartStore"
-
+import { toast} from "sonner"
+import ProductTabs from "./ProductTabs"
 const ProductInfo = ({ product }) => {
-  const addToCart = useCartStore((state) => state.addToCart)
-  const [quantity, setQuantity] = useState(1)
+const addToCart = useCartStore((state) => state.addToCart)
+const triggerCartBump=useCartStore((state)=>state.triggerCartBump)
+const cartItems = useCartStore((state) => state.items)
+const increaseQuantity = useCartStore((state) => state.increaseQuantity)
+const decreaseQuantity = useCartStore((state) => state.decreaseQuantity)
 
   const discountPercent =
     product.originalPrice && product.originalPrice > product.price
@@ -12,9 +16,21 @@ const ProductInfo = ({ product }) => {
           ((product.originalPrice - product.price) / product.originalPrice) * 100
         )
       : 0
+    
+   const cartItem=cartItems.find((item)=>item.id===product.id)
 
-  const handleAddToCart = () => {
-    addToCart({ ...product, quantity })
+      const handleAddToCart = () => {
+       addToCart(product)
+       triggerCartBump()
+
+          toast.success("Added to cart", {
+                 description: `${product.name} added in your cart`,
+                 position:"bottom-center",
+                 duration: 2000
+
+                 })
+
+       
   }
 
   return (
@@ -26,7 +42,7 @@ const ProductInfo = ({ product }) => {
       </div>
 
         <div className='flex items-center gap-2'>
-           <p className="text-2xl font-bold tracking-tight text-zinc-900">
+           <p className="text-xl font-bold tracking-tight text-zinc-900">
               ₹{product.price.toLocaleString()}
             </p>
           
@@ -45,43 +61,48 @@ const ProductInfo = ({ product }) => {
         {product.description}
       </p>
 
-      <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-zinc-700">Quantity</span>
+<div className="flex flex-col gap-3 sm:flex-row">
+  {!cartItem ? (
+    <Button
+      className="h-11 w-full rounded-full sm:flex-1"
+      onClick={handleAddToCart}
+    >
+      Add to Cart
+    </Button>
+        ) : (
+    <div className="flex h-11 w-full items-center justify-between rounded-full border border-zinc-200 bg-white px-4 shadow-sm sm:flex-1">
+      <button
+        onClick={() => decreaseQuantity(product.id)}
+        className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-medium text-zinc-700 transition hover:bg-zinc-100"
+      >
+        -
+      </button>
 
-        <div className="flex items-center rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1.5">
-          <button
-            onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-            className="px-2 text-lg"
-          >
-            -
-          </button>
+      <span className="text-sm font-semibold text-zinc-900">
+        {cartItem.quantity}
+      </span>
 
-          <span className="min-w-8 text-center text-sm font-semibold">
-            {quantity}
-          </span>
+      <button
+        onClick={() => increaseQuantity(product.id)}
+        className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-medium text-zinc-700 transition hover:bg-zinc-100"
+      >
+        +
+      </button>
+    </div>
+  )}
 
-          <button
-            onClick={() => setQuantity((prev) => prev + 1)}
-            className="px-2 text-lg"
-          >
-            +
-          </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Button className="w-full sm:flex-1" onClick={handleAddToCart}>
-          Add to Cart
-        </Button>
-
-        <Button variant="outline" className="w-full sm:flex-1">
-          Buy Now
-        </Button>
-      </div>
+  <Button
+    variant="outline"
+    className="h-11 w-full rounded-full sm:flex-1"
+  >
+    Buy Now
+  </Button>
+</div>
 
       <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-600">
         Free delivery within 5–7 business days.
       </div>
+      <ProductTabs product={product}/>
     </div>
   )
 }

@@ -1,19 +1,18 @@
 from django.urls import path
 from .views import (
-    CategoryListCreateView,
-    CategoryDetailView,
-    ProductListCreateView,
-    ProductDetailView,
+    SendOTPView,
+    VerifyOTPView,
+    ProfileView,
+    AddressListCreateView,
+    AddressDetailView,
 )
-from .views import RegisterView, LoginView
 
 urlpatterns = [
-    path("categories/", CategoryListCreateView.as_view(), name="category-list-create"),
-    path("categories/<int:pk>/", CategoryDetailView.as_view(), name="category-detail"),
+    path("auth/send-otp/", SendOTPView.as_view(), name="send-otp"),
+    path("auth/verify-otp/", VerifyOTPView.as_view(), name="verify-otp"),
 
-    path("products/", ProductListCreateView.as_view(), name="product-list-create"),
-    path("products/<int:pk>/", ProductDetailView.as_view(), name="product-detail"),
+    path("profile/", ProfileView.as_view(), name="profile"),
 
-    path("register/", RegisterView.as_view(), name="register"),
-    path("login/", LoginView.as_view(), name="login"),
+    path("addresses/", AddressListCreateView.as_view(), name="address-list-create"),
+    path("addresses/<int:pk>/", AddressDetailView.as_view(), name="address-detail"),
 ]

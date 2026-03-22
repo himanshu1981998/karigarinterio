@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -25,7 +26,7 @@ const LoginPage=({children}) =>{
               alt="Furniture"
               className="absolute inset-0 h-full w-full object-cover"
             />
-
+                  <DialogTitle></DialogTitle>
             {/* dark overlay */}
             
              <div className="absolute inset-0 bg-black/40" />

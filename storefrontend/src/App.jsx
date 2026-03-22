@@ -8,7 +8,8 @@ import Header from './components/Header'
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
 import WhatsAppButton from './components/WhatsAppButton'
 import { CartDrawer } from './components/CartDrawer'
-
+import CheckoutPage from './pages/CheckoutPage'
+import OrdersPage from './pages/OrdersPage'
 function App() {
   
 
@@ -21,6 +22,8 @@ function App() {
           <Routes>
                <Route path="/" element={<Home/>}/>
                <Route path="/product/:slug" element={<ProductPage />} />
+               <Route path="/checkout" element={<CheckoutPage />} />
+               <Route path="/orders" element={<OrdersPage />} />
           </Routes>
           <WhatsAppButton/>
       </BrowserRouter>

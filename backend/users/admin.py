@@ -28,15 +28,15 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(OTP)
 class OTPAdmin(admin.ModelAdmin):
-    list_display = ("id", "phone", "code", "purpose", "is_verified", "created_at", "expires_at")
+    list_display = ("id", "phone", "code", "purpose", "is_verified", "created_at", "expires_at","is_blocked")
     search_fields = ("phone",)
     list_filter = ("purpose", "is_verified")
 
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "full_name", "email", "contact_number")
-    search_fields = ("full_name", "email", "contact_number", "user__phone")
+    list_display = ("id", "user", "first_name","last_name", "email", "contact_number")
+    search_fields = ("first_name","last_name", "email", "contact_number", "user__phone")
 
 
 @admin.register(Address)

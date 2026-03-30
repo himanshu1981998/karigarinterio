@@ -1,6 +1,8 @@
 from django.conf import settings
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 from users.models import Profile, Address
 from users.serializers import (
@@ -39,7 +41,12 @@ class VerifyOTPView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        result= serializer.save()
+        
+        user=result["user"]
+        is_new_user=result["is_new_user"]
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(user)
 
         return Response(
             {
@@ -47,12 +54,15 @@ class VerifyOTPView(generics.GenericAPIView):
                 "user": {
                     "id": user.id,
                     "phone": user.phone,
-                    "is_phone_verified": user.is_phone_verified,
+                },
+                "is_new_user": is_new_user,
+                "tokens": {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
                 },
             },
             status=status.HTTP_200_OK,
         )
-
 
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
@@ -62,7 +72,8 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         profile, _ = Profile.objects.get_or_create(
             user=self.request.user,
             defaults={
-                "full_name": "",
+                "first_name": "",
+                "last_name":"",
                 "contact_number": self.request.user.phone,
             },
         )

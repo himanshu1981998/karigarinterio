@@ -2,21 +2,26 @@ import { Link } from "react-router-dom"
 import { ShoppingBag, Package, User } from "lucide-react"
 import logo from "../assets/logo.svg"
 import { FaWhatsapp } from "react-icons/fa"
-
 import { Button } from "@/components/ui/button"
 import LoginPage from "../pages/LoginPage"
 import { UserDropdown } from "./UserDropdown"
+import { useAuthStore } from "@/store/authStore"
 import { useCartStore } from "@/store/cartStore"
+import { useAuthModalStore } from "@/store/authModalStore"
 
 const Header=()=> {
  const openCart = useCartStore((state) => state.openCart)
-const totalItems = useCartStore((state) => state.items.reduce((total, item) => total + item.quantity, 0))
-const cartBump=useCartStore((state)=>state.cartBump)
- const isLoggedIn = useCartStore((state) => state.isLoggedIn)
- console.log(isLoggedIn)
+ const totalItems = useCartStore((state) => state.items.reduce((total, item) => total + item.quantity, 0))
+ const cartBump=useCartStore((state)=>state.cartBump)
+ const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
+ const isLoginOpen=useAuthModalStore((state)=>state.isLoginOpen)
+ const closeLoginModal=useAuthModalStore((state)=>state.closeLoginModal)
+ const openLoginModal=useAuthModalStore((state)=>state.openLoginModal)
+ 
 
 
   return (
+    <>
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left side → Logo + Brand */}
@@ -60,17 +65,19 @@ const cartBump=useCartStore((state)=>state.cartBump)
             
                 {/*change of button according to logged in or not*/}
                  {isLoggedIn ? <UserDropdown /> : 
-                 <LoginPage>
-                    <Button variant="ghost" size="icon">
+                 
+                    <Button variant="ghost" size="icon" onClick={()=>openLoginModal()}>
                         <User className="h-5 w-5" />
                     </Button>
-                   </LoginPage>}
+                  }
 
        
                 
         </div>
       </div>
     </header>
+              <LoginPage open={isLoginOpen} onOpenChange={closeLoginModal}/>
+              </>
   )
 }
 

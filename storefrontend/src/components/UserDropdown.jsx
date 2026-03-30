@@ -12,9 +12,20 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogOutIcon, PackageIcon, UserIcon } from "lucide-react"
 
+import { useAuthStore } from "@/store/authStore"
+
 export function UserDropdown() {
+const {logOut,profile,user}=useAuthStore()
+
+const displayName=profile?.first_name||user?.phone||"user"
+
   const handleLogout = () => {
+    logOut()
     console.log("logout user")
+
+             setTimeout(()=>{
+          window.location.reload()
+         },300)
   }
 
   return (
@@ -24,7 +35,7 @@ export function UserDropdown() {
           <Avatar className="h-9 w-9 border border-gray-200 hover:border-gray-900 transition">
             <AvatarImage src={testprofilepic} alt="User"/>
             {/*change the initials after getting name*/}
-            <AvatarFallback>KI</AvatarFallback>
+            <AvatarFallback>{displayName}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -32,7 +43,7 @@ export function UserDropdown() {
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link to="/profile" className="flex items-center gap-2">
+            <Link to="/MyProfile" className="flex items-center gap-2">
               <UserIcon className="h-4 w-4" />
               Profile
             </Link>

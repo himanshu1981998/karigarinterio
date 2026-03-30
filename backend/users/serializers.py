@@ -132,12 +132,15 @@ class OTPVerifySerializer(serializers.Serializer):
         Profile.objects.get_or_create(
             user=user,
             defaults={
-                "full_name": "",
+                "first_name": "",
+                "last_name": "",
                 "contact_number": phone,
             },
         )
 
-        return user
+        return {"user":user,
+                "is_new_user":created,
+        }
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -145,7 +148,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ["id", "full_name", "email", "contact_number", "phone"]
+        fields = ["id", "first_name","last_name", "email", "contact_number", "phone"]
 
 
 class AddressSerializer(serializers.ModelSerializer):

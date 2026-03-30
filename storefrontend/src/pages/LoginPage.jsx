@@ -9,13 +9,11 @@ import { LoginForm } from "@/components/LoginForm"
 import registerimage from "../assets/registerimage.jpg"
 import React from "react"
 
-const LoginPage=({children}) =>{
+const LoginPage=({open,onOpenChange}) =>{
 
   return (
-   <Dialog>
-      <DialogTrigger asChild>
-          {children}
-      </DialogTrigger>
+   <Dialog open={open} onOpenChange={onOpenChange}>
+     
 
       <DialogContent className="!w-[1000px] !max-w-[92vw] overflow-hidden border-0 p-0 backdrop-blur-md shadow-[0_40px_120px_rgba(0,0,0,0.35)]">
         <div className="grid min-h-[680px] md:grid-cols-[1.3fr_1fr]">

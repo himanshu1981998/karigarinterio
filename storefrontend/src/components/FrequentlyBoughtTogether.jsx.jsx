@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import ProductCard from "@/components/ProductCard"
-import { fetchProducts } from "@/lib/productApi"
+import { fetchProducts } from "@/lib/productApi.js"
 
 import {
   Carousel,

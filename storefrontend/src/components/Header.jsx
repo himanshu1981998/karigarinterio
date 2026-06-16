@@ -26,7 +26,7 @@ import { useCartStore } from "@/store/cartStore"
 import { useAuthModalStore } from "@/store/authModalStore"
 
 import useDebounce from "@/hooks/useDebounce"
-import { fetchProducts } from "@/lib/productApi"
+import { fetchProducts } from "@/lib/productApi.js"
 import { SearchResultsSkeleton } from "@/components/skeletons/BoneyardSkeletons"
 import { isBoneyardBuild } from "@/lib/boneyardBuild"
 

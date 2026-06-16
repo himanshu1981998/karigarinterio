@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import ProductGrid from "@/components/ProductGrid"
-import { fetchProducts } from "@/lib/productApi"
+import { fetchProducts } from "@/lib/productApi.js"
 import HomeCategories from "@/components/HomeCategories"
 import CustomBespokeSection from "@/components/CustomBespokeSection"
 import FeaturedCarousel from "@/components/FeaturedCarousel"

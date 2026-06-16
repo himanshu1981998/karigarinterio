@@ -13,7 +13,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 
-import { fetchCategories, fetchProducts } from "@/lib/productApi"
+import { fetchCategories, fetchProducts } from "@/lib/productApi.js"
 import useDebounce from "@/hooks/useDebounce"
 import {
   ProductGridFixture,

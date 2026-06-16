@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchCategories } from "@/lib/productApi"
+import { fetchCategories } from "@/lib/productApi.js"
 import { Link } from "react-router-dom"
 import { Skeleton } from "boneyard-js/react"
 import { CategorySkeletonGrid } from "@/components/skeletons/BoneyardSkeletons"

@@ -14,6 +14,8 @@ class Category(models.Model):
         blank=True,
     )
 
+    image = models.ImageField(upload_to="categories/", blank=True, null=True)
+
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -37,6 +39,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 
 class Product(models.Model):

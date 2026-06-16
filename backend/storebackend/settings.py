@@ -14,6 +14,11 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config
 
+
+def csv_config(name, default=""):
+    value = config(name, default=default)
+    return [item.strip() for item in value.split(",") if item.strip()]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = csv_config("ALLOWED_HOSTS", default="localhost,127.0.0.1")
 
 
 # Application definition
@@ -43,8 +48,10 @@ INSTALLED_APPS = [
     'api',
     'products',
     'users',
+    'orders',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'services',
 ]
  
 MIDDLEWARE = [
@@ -140,6 +147,13 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.ScopedRateThrottle",
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        "otp_send": config("OTP_SEND_THROTTLE", default="5/hour"),
+        "otp_verify": config("OTP_VERIFY_THROTTLE", default="10/hour"),
+    },
 }
 
 SIMPLE_JWT = {
@@ -149,7 +163,21 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION":True,
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+CORS_ALLOWED_ORIGINS = csv_config(
+    "CORS_ALLOWED_ORIGINS",
+    default="http://localhost:5173,http://127.0.0.1:5173",
+)
+
+RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID", default="")
+RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET", default="")
+RAZORPAY_WEBHOOK_SECRET = config("RAZORPAY_WEBHOOK_SECRET", default="")
+RAZORPAY_CURRENCY = config("RAZORPAY_CURRENCY", default="INR")
+
+EMAIL_BACKEND = config("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = config("EMAIL_HOST", default="")
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="no-reply@karigarinterio.com")
+ADMIN_NOTIFICATION_EMAILS = csv_config("ADMIN_NOTIFICATION_EMAILS", default="")

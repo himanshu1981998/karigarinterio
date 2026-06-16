@@ -1,23 +1,18 @@
-import React from 'react'
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { toast } from "sonner"
 import { useCartStore } from '@/store/cartStore'
 import { Link } from 'react-router-dom'
 const ProductCard = ({product}) => {
-       const addToCart = useCartStore((state) => state.addToCart)
-       const triggerCartBump=useCartStore((state)=>state.triggerCartBump)
+  const addToCart = useCartStore((state) => state.addToCart)
+  const triggerCartBump=useCartStore((state)=>state.triggerCartBump)
+  const price = Number(product.price || 0)
+  const originalPrice = Number(product.original_price || 0)
+  const hasMrp = originalPrice > price
+
 
        const handleAddToCart = () => {
-       addToCart(product)
+       addToCart(product,1)
        triggerCartBump()
 
           toast.success("Added to cart", {
@@ -30,10 +25,9 @@ const ProductCard = ({product}) => {
        
   }
 
-    const discountPercentage =
-     product.originalPrice && product.originalPrice > product.price
-      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-        : 0
+
+
+ 
 
   return (
     
@@ -41,15 +35,18 @@ const ProductCard = ({product}) => {
        <Link to={`/product/${product.slug}`}>
       {/* Image */}
       <div className="relative overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-50 aspect-[4/5]">
+        {product.primary_image?(
         <img
-          src={product.images?.[0]}
+          src={product.primary_image}
           alt={product.name}
           className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-        />
+        />):
+           <div className='flex h-full w-full items-center justify-center text-sm text-zinc-400'>No Iamge</div>
+        }
 
         {/* Category */}
         <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm backdrop-blur-sm">
-          {product.category}
+          {product.category?.name}
         </span>
       </div>
 
@@ -61,19 +58,22 @@ const ProductCard = ({product}) => {
         
        
        <div className='flex items-center gap-2'>
+
            <p className="text-xl font-bold tracking-tight text-zinc-900">
-              ₹{product.price.toLocaleString()}
+              ₹{price.toLocaleString()}
             </p>
           
-           {product.originalPrice && product.originalPrice > product.price && (
+           {hasMrp && (
            <p className="text-sm text-zinc-400 line-through">
-               ₹{product.originalPrice.toLocaleString()}
+               ₹{originalPrice.toLocaleString()}
             </p>
              )}
 
-           <span className=" rounded-xl bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-600 shadow-sm backdrop-blur-sm">
-              {discountPercentage}%OFF
-           </span>
+            {product.discount_percentage>0&&(
+              <span className=" rounded-xl bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-600 shadow-sm backdrop-blur-sm">
+              {product.discount_percentage}%OFF
+              </span>
+             )}   
 
        </div>
 

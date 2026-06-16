@@ -10,12 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOutIcon, PackageIcon, UserIcon } from "lucide-react"
+import { LayoutDashboard, LogOutIcon, PackageIcon, UserIcon } from "lucide-react"
 
 import { useAuthStore } from "@/store/authStore"
 
 export function UserDropdown() {
-const {logOut,profile,user}=useAuthStore()
+const {logOut,profile,user,isAdmin}=useAuthStore()
 
 const displayName=profile?.first_name||user?.phone||"user"
 
@@ -55,6 +55,15 @@ const displayName=profile?.first_name||user?.phone||"user"
               My Orders
             </Link>
           </DropdownMenuItem>
+
+          {isAdmin && (
+            <DropdownMenuItem asChild>
+              <Link to="/admin" className="flex items-center gap-2">
+                <LayoutDashboard className="h-4 w-4" />
+                Admin Dashboard
+              </Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

@@ -1,151 +1,162 @@
-import { useRef, useState } from "react"
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog"
+import { useMemo, useState } from "react"
 
-const ProductImageGallery = ({ images }) => {
-  const [activeImage, setActiveImage] = useState(images[0] || "")
-  const [showZoom, setShowZoom] = useState(false)
-  const [openModal, setOpenModal] = useState(false)
-  const [lensPosition, setLensPosition] = useState({ x: 0, y: 0 })
-  const [bgPosition, setBgPosition] = useState({ x: 0, y: 0 })
+const ImageTile = ({ src, alt, className = "", onOpen }) => (
+  <button
+    type="button"
+    onClick={() => onOpen(src)}
+    className={`group relative overflow-hidden bg-[#f3f1ec] ${className}`}
+  >
+    <img
+      src={src}
+      alt={alt}
+      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+    />
+  </button>
+)
 
-  const imageRef = useRef(null)
+const ProductImageGallery = ({ images = [] }) => {
+  const validImages = useMemo(() => {
+    if (!Array.isArray(images)) return []
 
-  const handleMouseMove = (e) => {
-    if (!imageRef.current) return
+    const normalized = images
+      .map((img) => {
+        if (!img) return null
 
-    const rect = imageRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+        if (typeof img === "string") {
+          return {
+            src: img,
+            isPrimary: false,
+          }
+        }
 
-    const width = rect.width
-    const height = rect.height
+        return {
+          src: img.image || img.src || "",
+          isPrimary: Boolean(img.is_primary || img.isPrimary),
+        }
+      })
+      .filter((img) => img?.src)
 
-    const clampedX = Math.max(0, Math.min(x, width))
-    const clampedY = Math.max(0, Math.min(y, height))
+    const primaryImage = normalized.find((img) => img.isPrimary)
+    const remainingImages = normalized.filter((img) => !img.isPrimary)
 
-    setLensPosition({ x: clampedX, y: clampedY })
-    setBgPosition({
-      x: (clampedX / width) * 100,
-      y: (clampedY / height) * 100,
-    })
-  }
+    return primaryImage ? [primaryImage, ...remainingImages] : normalized
+  }, [images])
 
-  if (!images?.length) {
+  const [modalImage, setModalImage] = useState(null)
+
+  if (validImages.length === 0) {
     return (
-      <div className="rounded-2xl bg-zinc-100 p-10 text-center text-sm text-zinc-500">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-10 text-center text-sm text-zinc-500">
         No images available
       </div>
     )
   }
 
+  const mainImage = validImages[0]?.src
+  const secondRow = validImages.slice(1, 3)
+  const thirdRow = validImages.slice(3, 5)
+
   return (
     <>
-      <div className="flex flex-col gap-4 lg:flex-row">
-        {/* thumbnails */}
-        <div className="order-2 flex gap-3 overflow-x-auto lg:order-1 lg:max-h-[420px] lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden scrollbar-hover flex-shrink-0">
-          {images.map((img, i) => (
+      {/* MOBILE: horizontal swipe */}
+      <div className="lg:hidden">
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto scrollbar-hide">
+          {validImages.map((img, index) => (
             <button
-              key={i}
-              onMouseEnter={() => setActiveImage(img)}
-              onClick={() => setActiveImage(img)}
-              className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border transition-all duration-200 sm:h-20 sm:w-20 ${
-                activeImage === img
-                  ? "border-black ring-2 ring-black/20"
-                  : "border-zinc-200 hover:border-black"
-              }`}
+              key={`mobile-image-${index}`}
+              type="button"
+              onClick={() => setModalImage(img.src)}
+              className="group w-[88%] shrink-0 snap-center overflow-hidden rounded-sm bg-[#f3f1ec]"
             >
-              <img
-                src={img}
-                alt={`Thumbnail ${i + 1}`}
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
-              />
+              <div className="aspect-[4/5] w-full overflow-hidden">
+                <img
+                  src={img.src}
+                  alt={`Product image ${index + 1}`}
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+              </div>
             </button>
           ))}
         </div>
-
-        {/* main image + desktop zoom */}
-        <div className="order-1 flex gap-6 lg:order-2">
-          {/* main image */}
-          <div
-            ref={imageRef}
-            className="relative aspect-square w-full cursor-zoom-in overflow-hidden rounded-2xl bg-zinc-100 lg:w-[450px]"
-            onClick={() => setOpenModal(true)}
-            onMouseEnter={() => setShowZoom(true)}
-            onMouseLeave={() => setShowZoom(false)}
-            onMouseMove={handleMouseMove}
-          >
-            <img
-              src={activeImage}
-              alt="Product"
-              className="h-full w-full object-contain"
-            />
-
-            {showZoom && (
-              <div
-                className="pointer-events-none absolute hidden h-24 w-24 -translate-x-1/2 -translate-y-1/2 border border-zinc-400/60 bg-white/20 lg:block"
-                style={{
-                  left: `${lensPosition.x}px`,
-                  top: `${lensPosition.y}px`,
-                }}
-              />
-            )}
-          </div>
-
-          {/* desktop zoom preview */}
-          {showZoom && (
-            <div className="hidden h-[450px] w-[450px] z-10 flex-shrink-0 overflow-hidden rounded-2xl border bg-zinc-100 shadow-lg lg:block">
-              <div
-                className="h-full w-full bg-no-repeat"
-                style={{
-                  backgroundImage: `url(${activeImage})`,
-                  backgroundPosition: `${bgPosition.x}% ${bgPosition.y}%`,
-                  backgroundSize: "220%",
-                }}
-              />
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* image modal */}
-      <Dialog open={openModal} onOpenChange={setOpenModal}>
-        <DialogContent className="!w-[1200px] !max-w-[95vw] !h-[90vh]  overflow-hidden p-0">
-          <div className="grid gap-4 p-4 md:grid-cols-[100px_1fr] md:p-6">
-            {/* modal thumbnails */}
-            <div className="flex gap-3 overflow-x-auto md:max-h-[75vh] md:flex-col md:overflow-y-auto md:overflow-x-hidden scrollbar-hover">
-              {images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(img)}
-                  className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border transition-all duration-200 md:h-20 md:w-20 ${
-                    activeImage === img
-                      ? "border-black ring-2 ring-black/20"
-                      : "border-zinc-200 hover:border-black"
-                  }`}
-                >
-                  <img
-                    src={img}
-                    alt={`Modal thumbnail ${i + 1}`}
-                    className="h-full w-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+      {/* DESKTOP / LAPTOP */}
+      <div className="hidden space-y-3 lg:block">
+        {/* Primary image - slightly less dominant */}
+        <div className="overflow-hidden rounded-sm bg-[#f3f1ec]">
+          <ImageTile
+            src={mainImage}
+            alt="Product image 1"
+            className="aspect-[5/4] w-full"
+            onOpen={setModalImage}
+          />
+        </div>
 
-            {/* modal main image */}
-            <div className="flex items-center justify-center rounded-xl bg-zinc-100 p-4">
-              <img
-                src={activeImage}
-                alt="Large product"
-                className="max-h-[75vh] w-auto object-contain"
-              />
-            </div>
+        {/* Row 2 */}
+        {secondRow.length > 0 && (
+          <div className="grid grid-cols-2 gap-3">
+            {secondRow.map((img, index) => (
+              <div
+                key={`second-row-${index}`}
+                className="overflow-hidden rounded-sm bg-[#f3f1ec]"
+              >
+                <ImageTile
+                  src={img.src}
+                  alt={`Product image ${index + 2}`}
+                  className="aspect-[4/5] w-full"
+                  onOpen={setModalImage}
+                />
+              </div>
+            ))}
           </div>
-        </DialogContent>
-      </Dialog>
+        )}
+
+        {/* Row 3 */}
+        {thirdRow.length > 0 && (
+          <div className="grid grid-cols-2 gap-3">
+            {thirdRow.map((img, index) => (
+              <div
+                key={`third-row-${index}`}
+                className="overflow-hidden rounded-sm bg-[#f3f1ec]"
+              >
+                <ImageTile
+                  src={img.src}
+                  alt={`Product image ${index + 4}`}
+                  className="aspect-[4/5] w-full"
+                  onOpen={setModalImage}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Modal */}
+      {modalImage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setModalImage(null)}
+        >
+          <div
+            className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden bg-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setModalImage(null)}
+              className="absolute right-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-zinc-800 shadow"
+            >
+              Close
+            </button>
+
+            <img
+              src={modalImage}
+              alt="Expanded product"
+              className="max-h-[90vh] w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </>
   )
 }

@@ -127,12 +127,15 @@ const MyProfile = () => {
                   <label className="mb-2 block text-sm font-medium text-zinc-700">
                     Contact Number
                   </label>
-                  <Input
-                    name="contact_number"
-                    value={formData.contact_number}
-                    onChange={handleChange}
-                    placeholder="Enter contact number"
-                  />
+                <Input
+                  name="contact_number"
+                  value={formData.contact_number}
+                  onChange={(e) =>
+                  setFormData((prev) => ({
+                   ...prev,
+                    contact_number: e.target.value.replace(/\D/g, ""),
+                     }))}
+                />
                 </div>
               </div>
 

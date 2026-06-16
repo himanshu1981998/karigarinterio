@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import api from "@/lib/api"
 import { useAuthStore } from "@/store/authStore"
 import { useAuthModalStore } from "@/store/authModalStore"
+import { useCartStore } from "@/store/cartStore"
 
 export function LoginForm() {
   const [phone, setPhone] = useState("")
@@ -22,8 +23,10 @@ export function LoginForm() {
 
   const inputRefs = useRef([])
   const navigate = useNavigate()
+
   const logIn = useAuthStore((state) => state.logIn)
   const setProfile = useAuthStore((state) => state.setProfile)
+
   const closeLoginModal = useAuthModalStore((state) => state.closeLoginModal)
   const redirectPath = useAuthModalStore((state) => state.redirectPath)
   const clearRedirectPath = useAuthModalStore((state) => state.clearRedirectPath)
@@ -31,14 +34,20 @@ export function LoginForm() {
   const handlePhoneSubmit = async (e) => {
     e.preventDefault()
 
+    if (phone.length !== 10) {
+      toast.error("Invalid number", {
+        description: "Please enter a valid 10-digit mobile number",
+        position: "bottom-center",
+      })
+      return
+    }
+
     try {
       setLoading(true)
 
       const response = await api.post("/auth/send-otp/", {
         phone,
       })
-
-
 
       toast.success("OTP sent successfully", {
         description: `OTP sent to ${response.data.phone}`,
@@ -82,6 +91,16 @@ export function LoginForm() {
     }
   }
 
+  const handlePaste = (e) => {
+    const paste = e.clipboardData.getData("text").trim()
+
+    if (/^\d{6}$/.test(paste)) {
+      const digits = paste.split("")
+      setOtp(digits)
+      inputRefs.current[5]?.focus()
+    }
+  }
+
   const verifyOtp = async () => {
     const finalOtp = otp.join("")
 
@@ -102,11 +121,18 @@ export function LoginForm() {
       })
 
       const { user, tokens, is_new_user } = response.data
+      const authenticatedUser = {
+        ...user,
+        is_staff: Boolean(user?.is_staff),
+        is_superuser: Boolean(user?.is_superuser),
+      }
 
       localStorage.setItem("access", tokens.access)
       localStorage.setItem("refresh", tokens.refresh)
+        console.log(authenticatedUser)
+      logIn(authenticatedUser)
 
-      logIn(user)
+      await useCartStore.getState().syncGuestCart()
 
       if (is_new_user) {
         toast.success("Phone verified", {
@@ -117,7 +143,7 @@ export function LoginForm() {
         return
       }
 
-      const profileResponse=await api.get("/profile/")
+      const profileResponse = await api.get("/profile/")
       setProfile(profileResponse.data)
 
       toast.success("Login successful", {
@@ -131,8 +157,9 @@ export function LoginForm() {
         if (redirectPath) {
           navigate(redirectPath)
           clearRedirectPath()
-        } 
- 
+        } else {
+          navigate("/")
+        }
       }, 800)
     } catch (error) {
       console.error("Verify OTP error:", error)
@@ -153,9 +180,10 @@ export function LoginForm() {
       })
 
       if (
-        message.includes("blocked") ||
-        message.includes("expired") ||
-        message.includes("resend")
+        typeof message === "string" &&
+        (message.includes("blocked") ||
+          message.includes("expired") ||
+          message.includes("resend"))
       ) {
         setOtp(["", "", "", "", "", ""])
       }
@@ -165,14 +193,14 @@ export function LoginForm() {
   }
 
   const handleResendOtp = async () => {
+    if (loading || resendTimer > 0) return
+
     try {
       setLoading(true)
 
       const response = await api.post("/auth/send-otp/", {
         phone,
       })
-
-
 
       toast.success("OTP resent", {
         description: `New OTP sent to ${response.data.phone}`,
@@ -214,8 +242,8 @@ export function LoginForm() {
       setLoading(true)
 
       const response = await api.patch("/profile/", {
-        first_name:profileForm.first_name,
-        last_name:profileForm.last_name,
+        first_name: profileForm.first_name,
+        last_name: profileForm.last_name,
         email: profileForm.email,
         contact_number: phone,
       })
@@ -233,8 +261,9 @@ export function LoginForm() {
         if (redirectPath) {
           navigate(redirectPath)
           clearRedirectPath()
-        } 
-
+        } else {
+          navigate("/")
+        }
       }, 800)
     } catch (error) {
       const data = error?.response?.data
@@ -263,6 +292,12 @@ export function LoginForm() {
     return () => clearInterval(timer)
   }, [resendTimer])
 
+  useEffect(() => {
+    if (step === "otp") {
+      inputRefs.current[0]?.focus()
+    }
+  }, [step])
+
   return (
     <div className="space-y-6">
       {step === "phone" && (
@@ -280,7 +315,10 @@ export function LoginForm() {
               type="tel"
               placeholder="Enter mobile number"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "")
+                setPhone(value)
+              }}
               maxLength={10}
               required
             />
@@ -305,7 +343,7 @@ export function LoginForm() {
             </p>
           </div>
 
-          <div className="flex justify-center gap-2">
+          <div className="flex justify-center gap-2" onPaste={handlePaste}>
             {otp.map((digit, index) => (
               <Input
                 key={index}

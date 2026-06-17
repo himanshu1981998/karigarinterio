@@ -9,7 +9,7 @@ services:
     runtime: python
     rootDir: backend
     plan: starter
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py seed_catalog
+    buildCommand: sh build.sh
     startCommand: sh start.sh
     autoDeploy: false
     disk:

@@ -18,7 +18,7 @@ This project is set up for a split deployment:
 Render blueprint summary:
 
 - Web service root: `backend`
-- Build command: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py seed_catalog`
+- Build command: `sh build.sh`
 - Start command: `sh start.sh`
 - Persistent disk mount: `/opt/render/project/src/backend/media`
 
@@ -74,10 +74,10 @@ This repo also includes a bundled catalog seed for the current products, categor
 The recommended Render build command runs this automatically after migrations:
 
 ```bash
-python manage.py seed_catalog
+sh build.sh
 ```
 
-The command copies media on every run, but it only loads the fixture if the production catalog is empty.
+The build script installs dependencies, collects static files, runs migrations, and seeds the catalog. The seed command copies media on every run, but it only loads the fixture if the production catalog is empty.
 
 The recommended Render start command also runs this before Gunicorn:
 

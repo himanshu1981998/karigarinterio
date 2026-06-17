@@ -14,11 +14,30 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from pathlib import Path
+
 from django.contrib import admin
-from django.urls import path ,include
+from django.http import Http404
+from django.urls import path, include, re_path
 from django.conf import settings
-from django.conf.urls.static import static
+from django.views.static import serve
 from rest_framework_simplejwt.views import TokenRefreshView
+
+
+def serve_media_or_seed(request, path):
+    media_root = Path(settings.MEDIA_ROOT)
+    media_path = media_root / path
+
+    if media_path.exists():
+        return serve(request, path, document_root=settings.MEDIA_ROOT)
+
+    seed_media_root = settings.BASE_DIR / "products" / "seed_media"
+    seed_path = seed_media_root / path
+
+    if seed_path.exists():
+        return serve(request, path, document_root=seed_media_root)
+
+    raise Http404("Media file was not found.")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +47,10 @@ urlpatterns = [
     path("api/", include("services.urls")),
 ]
 if settings.DEBUG or settings.SERVE_MEDIA:
-    urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
-
+    urlpatterns += [
+        re_path(
+            rf"^{settings.MEDIA_URL.lstrip('/')}(.+)$",
+            serve_media_or_seed,
+            name="media",
+        )
+    ]

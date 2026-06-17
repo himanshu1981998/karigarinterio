@@ -153,7 +153,7 @@ STATIC_ROOT = config("STATIC_ROOT", default=str(BASE_DIR / "staticfiles"))
 
 MEDIA_URL = config("MEDIA_URL", default='/media/')
 MEDIA_ROOT = Path(config("MEDIA_ROOT", default=str(BASE_DIR / "media")))
-SERVE_MEDIA = config("SERVE_MEDIA", default=DEBUG, cast=bool)
+SERVE_MEDIA = config("SERVE_MEDIA", default=True, cast=bool)
 
 STORAGES = {
     "default": {

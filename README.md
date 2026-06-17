@@ -19,7 +19,7 @@ Render blueprint summary:
 
 - Web service root: `backend`
 - Build command: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py seed_catalog`
-- Start command: `gunicorn storebackend.wsgi:application --bind 0.0.0.0:$PORT`
+- Start command: `sh start.sh`
 - Persistent disk mount: `/opt/render/project/src/backend/media`
 
 After the first deploy, set these values in Render:
@@ -78,6 +78,14 @@ python manage.py seed_catalog
 ```
 
 The command copies media on every run, but it only loads the fixture if the production catalog is empty.
+
+The recommended Render start command also runs this before Gunicorn:
+
+```bash
+sh start.sh
+```
+
+That keeps bundled seed media available on Render free services after restarts.
 
 If you already created test products in production and want to replace the production catalog with the bundled local catalog, run this manually from the Render service shell:
 

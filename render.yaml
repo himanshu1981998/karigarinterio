@@ -10,7 +10,7 @@ services:
     rootDir: backend
     plan: starter
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py seed_catalog
-    startCommand: gunicorn storebackend.wsgi:application --bind 0.0.0.0:$PORT
+    startCommand: sh start.sh
     autoDeploy: false
     disk:
       name: karigar-interio-media

@@ -18,7 +18,7 @@ This project is set up for a split deployment:
 Render blueprint summary:
 
 - Web service root: `backend`
-- Build command: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`
+- Build command: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py seed_catalog`
 - Start command: `gunicorn storebackend.wsgi:application --bind 0.0.0.0:$PORT`
 - Persistent disk mount: `/opt/render/project/src/backend/media`
 
@@ -66,6 +66,26 @@ tar -czf catalog-media.tar.gz backend/media/categories backend/media/products
 ```
 
 Upload and extract that archive inside the backend service environment so the files land under `MEDIA_ROOT`.
+
+## Seed Catalog On Render
+
+This repo also includes a bundled catalog seed for the current products, categories, specifications, and media files.
+
+The recommended Render build command runs this automatically after migrations:
+
+```bash
+python manage.py seed_catalog
+```
+
+The command copies media on every run, but it only loads the fixture if the production catalog is empty.
+
+If you already created test products in production and want to replace the production catalog with the bundled local catalog, run this manually from the Render service shell:
+
+```bash
+python manage.py seed_catalog --replace
+```
+
+For a first empty Render database, use `python manage.py seed_catalog`. The command copies files from `products/seed_media/` into `MEDIA_ROOT` and loads `products/fixtures/catalog_seed.json`.
 
 ## Verification
 

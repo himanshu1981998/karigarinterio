@@ -1,0 +1,370 @@
+[
+{
+  "model": "products.category",
+  "pk": 1,
+  "fields": {
+    "name": "Beds",
+    "slug": "beds",
+    "parent": null,
+    "image": "categories/beds.png",
+    "is_active": true,
+    "created_at": "2026-03-30T16:05:30.042Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 2,
+  "fields": {
+    "name": "Table",
+    "slug": "table",
+    "parent": null,
+    "image": "categories/table.png",
+    "is_active": true,
+    "created_at": "2026-03-30T16:05:44.639Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 3,
+  "fields": {
+    "name": "Chair",
+    "slug": "chair",
+    "parent": null,
+    "image": "categories/chair.png",
+    "is_active": true,
+    "created_at": "2026-03-30T16:05:54.557Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 4,
+  "fields": {
+    "name": "Office Chair",
+    "slug": "office-chair",
+    "parent": 3,
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-03-30T16:06:10.029Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 5,
+  "fields": {
+    "name": "Dining Chiar",
+    "slug": "dining-chiar",
+    "parent": 3,
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-03-30T16:07:29.922Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 6,
+  "fields": {
+    "name": "Sofa",
+    "slug": "sofa",
+    "parent": null,
+    "image": "categories/sofa.png",
+    "is_active": true,
+    "created_at": "2026-03-30T16:09:07.510Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "category": 6,
+    "name": "Magnum",
+    "slug": "magnum",
+    "sku": "KI-001",
+    "short_description": "beautiful and elegant sofa with amazing soft touch",
+    "description": "mast h sofa ekdum bohut sundar h mera wala white h makhan malai h ekdum",
+    "price": "60000.00",
+    "original_price": "72000.00",
+    "stock": 3,
+    "is_active": true,
+    "is_featured": false,
+    "material_summary": "suade",
+    "finish": "fabric",
+    "width_cm": "6.00",
+    "depth_cm": "3.00",
+    "height_cm": "2.00",
+    "estimated_shipping_text": "shipping in 2 weeks",
+    "created_at": "2026-03-30T16:12:28.638Z",
+    "updated_at": "2026-06-16T06:16:59.041Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "category": 2,
+    "name": "Arno Glass Top Coffee Table (Honey Finish) - Sheesham Wood, Open Storage Shelf, Pre-Assembled | Fits Standard 3-Seater Sofa",
+    "slug": "arno-glass-top-coffee-table-honey-finish-sheesham",
+    "sku": "KI-002",
+    "short_description": "",
+    "description": "wooden table amazing finish",
+    "price": "13999.00",
+    "original_price": "24999.00",
+    "stock": 9,
+    "is_active": true,
+    "is_featured": false,
+    "material_summary": "Sheesham Wood",
+    "finish": "Honey Finish",
+    "width_cm": "42.00",
+    "depth_cm": "22.00",
+    "height_cm": "16.00",
+    "estimated_shipping_text": "shipping in 2 weeks",
+    "created_at": "2026-04-18T07:01:47.375Z",
+    "updated_at": "2026-06-16T06:17:00.525Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "category": 3,
+    "name": "bean bag",
+    "slug": "bean-bag",
+    "sku": "KI-003",
+    "short_description": "MAST H",
+    "description": "BOHUT ACHA H",
+    "price": "700.00",
+    "original_price": "1000.00",
+    "stock": 5,
+    "is_active": true,
+    "is_featured": false,
+    "material_summary": "synthetic",
+    "finish": "kamal",
+    "width_cm": "45.00",
+    "depth_cm": "52.00",
+    "height_cm": "55.00",
+    "estimated_shipping_text": "shipping in 2 weeks",
+    "created_at": "2026-06-16T06:21:54.324Z",
+    "updated_at": "2026-06-16T06:59:11.523Z"
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "image": "products/sofapic1.webp",
+    "alt_text": null,
+    "is_primary": true,
+    "sort_order": 1
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 2,
+  "fields": {
+    "product": 1,
+    "image": "products/sofapic2.webp",
+    "alt_text": null,
+    "is_primary": false,
+    "sort_order": 3
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 3,
+  "fields": {
+    "product": 1,
+    "image": "products/sofapic3.webp",
+    "alt_text": null,
+    "is_primary": false,
+    "sort_order": 2
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 4,
+  "fields": {
+    "product": 1,
+    "image": "products/sofapic4.webp",
+    "alt_text": null,
+    "is_primary": false,
+    "sort_order": 5
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 5,
+  "fields": {
+    "product": 1,
+    "image": "products/sofapic5.webp",
+    "alt_text": null,
+    "is_primary": false,
+    "sort_order": 4
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 6,
+  "fields": {
+    "product": 2,
+    "image": "products/img1.webp",
+    "alt_text": null,
+    "is_primary": true,
+    "sort_order": 1
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 7,
+  "fields": {
+    "product": 2,
+    "image": "products/img2.webp",
+    "alt_text": null,
+    "is_primary": false,
+    "sort_order": 2
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 8,
+  "fields": {
+    "product": 2,
+    "image": "products/img3.webp",
+    "alt_text": null,
+    "is_primary": false,
+    "sort_order": 3
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 9,
+  "fields": {
+    "product": 2,
+    "image": "products/img4.webp",
+    "alt_text": null,
+    "is_primary": false,
+    "sort_order": 4
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 10,
+  "fields": {
+    "product": 3,
+    "image": "products/IMG_5086.png",
+    "alt_text": "chawla boi",
+    "is_primary": true,
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 11,
+  "fields": {
+    "product": 3,
+    "image": "products/Screenshot_2026-03-12_at_8.51.06PM.png",
+    "alt_text": "bean bag",
+    "is_primary": false,
+    "sort_order": 1
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "name": "material",
+    "value": "wood",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 2,
+  "fields": {
+    "product": 1,
+    "name": "finish",
+    "value": "antique",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 3,
+  "fields": {
+    "product": 1,
+    "name": "shipping",
+    "value": "2 weeks",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 4,
+  "fields": {
+    "product": 1,
+    "name": "care",
+    "value": "dust with fiber cloth",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 5,
+  "fields": {
+    "product": 2,
+    "name": "Tabletop Material",
+    "value": "8mm Tempered Safety Glass",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 6,
+  "fields": {
+    "product": 2,
+    "name": "Product Weight",
+    "value": "33 Kg",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 7,
+  "fields": {
+    "product": 2,
+    "name": "Dimension (cm)",
+    "value": "106.7 L x 55.9 W x 40.6 H",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 8,
+  "fields": {
+    "product": 2,
+    "name": "Delivery Condition",
+    "value": "Pre-assembled",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 9,
+  "fields": {
+    "product": 2,
+    "name": "Glass Edge Finish",
+    "value": "Polished edges, smooth and rounded",
+    "sort_order": 0
+  }
+},
+{
+  "model": "products.productspecification",
+  "pk": 10,
+  "fields": {
+    "product": 3,
+    "name": "shipping",
+    "value": "2 weeks",
+    "sort_order": 0
+  }
+}
+]

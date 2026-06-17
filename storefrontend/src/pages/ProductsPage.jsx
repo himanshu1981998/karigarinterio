@@ -233,10 +233,10 @@ const ProductsPage = () => {
   ].filter(Boolean).length
 
   return (
-    <div className="min-h-screen bg-zinc-100">
+    <div className="ki-page min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <div className="mb-4 text-sm text-zinc-500">
-          <Link to="/" className="hover:text-zinc-700 hover:underline">
+        <div className="mb-4 text-sm text-stone-500">
+          <Link to="/" className="hover:text-stone-800 hover:underline">
             Home
           </Link>
           <span className="mx-2">/</span>
@@ -244,19 +244,22 @@ const ProductsPage = () => {
           {currentCategory && (
             <>
               <span className="mx-2">/</span>
-              <span className="font-medium text-zinc-900">
+              <span className="font-medium text-stone-900">
                 {currentCategory.name}
               </span>
             </>
           )}
         </div>
 
-        <div className="mb-8 rounded-3xl bg-white px-6 py-8 text-center shadow-sm sm:px-8 sm:py-10">
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl">
+        <div className="ki-panel mb-7 overflow-hidden rounded-2xl px-6 py-7 text-center backdrop-blur sm:px-8 sm:py-9">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
+            Karigar Interio Collection
+          </p>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-stone-950 sm:text-4xl lg:text-5xl">
             {filters.sale ? "Sale" : currentCategory ? currentCategory.name : "All Products"}
           </h1>
 
-          <p className="mt-3 text-sm text-zinc-500 sm:text-base">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-500 sm:text-base">
             Explore handcrafted furniture and home decor.
           </p>
         </div>
@@ -264,10 +267,10 @@ const ProductsPage = () => {
         {/* Desktop Filter Bar */}
         <div
           ref={dropdownRef}
-          className="mb-6 hidden items-center justify-between gap-6 px-1 py-2 lg:flex"
+          className="ki-panel mb-6 hidden items-center justify-between gap-6 rounded-2xl px-5 py-4 backdrop-blur lg:flex"
         >
-          <div className="flex items-center gap-8 text-sm text-zinc-700">
-            <span className="font-medium text-zinc-800">Filter:</span>
+          <div className="flex items-center gap-6 text-sm text-stone-700">
+            <span className="font-semibold text-stone-900">Filter</span>
 
             {/* Category */}
             <div className="relative">
@@ -278,14 +281,14 @@ const ProductsPage = () => {
                     prev === "category" ? null : "category"
                   )
                 }
-                className="flex items-center gap-2 text-[15px] text-zinc-700 transition hover:text-zinc-900"
+                className="flex items-center gap-2 rounded-full px-3 py-2 text-[15px] text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
               >
                 <span>{currentCategory ? currentCategory.name : "Category"}</span>
                 <ChevronDown className="h-4 w-4" />
               </button>
 
               {openDesktopMenu === "category" && (
-                <div className="absolute left-0 top-full z-30 mt-4 w-64 rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl">
+                <div className="absolute left-0 top-full z-30 mt-4 w-64 rounded-2xl border border-stone-200 bg-white p-2 shadow-xl shadow-stone-950/10">
                   <button
                     type="button"
                     onClick={() => {
@@ -295,8 +298,8 @@ const ProductsPage = () => {
                       }))
                       setOpenDesktopMenu(null)
                     }}
-                    className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-zinc-100 ${
-                      !filters.category ? "bg-zinc-100 font-medium text-zinc-900" : "text-zinc-700"
+                    className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-stone-100 ${
+                      !filters.category ? "bg-stone-100 font-medium text-stone-950" : "text-stone-700"
                     }`}
                   >
                     All Categories
@@ -313,10 +316,10 @@ const ProductsPage = () => {
                         }))
                         setOpenDesktopMenu(null)
                       }}
-                      className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-zinc-100 ${
+                      className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-stone-100 ${
                         filters.category === cat.slug
-                          ? "bg-zinc-100 font-medium text-zinc-900"
-                          : "text-zinc-700"
+                          ? "bg-stone-100 font-medium text-stone-950"
+                          : "text-stone-700"
                       }`}
                     >
                       {cat.name}
@@ -335,15 +338,15 @@ const ProductsPage = () => {
                     prev === "price" ? null : "price"
                   )
                 }
-                className="flex items-center gap-2 text-[15px] text-zinc-700 transition hover:text-zinc-900"
+                className="flex items-center gap-2 rounded-full px-3 py-2 text-[15px] text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
               >
                 <span>Price</span>
                 <ChevronDown className="h-4 w-4" />
               </button>
 
               {openDesktopMenu === "price" && (
-                <div className="absolute left-0 top-full z-30 mt-4 w-72 rounded-2xl border border-zinc-200 bg-white p-4 shadow-xl">
-                  <p className="mb-3 text-sm font-medium text-zinc-900">
+                <div className="absolute left-0 top-full z-30 mt-4 w-72 rounded-2xl border border-stone-200 bg-white p-4 shadow-xl shadow-stone-950/10">
+                  <p className="mb-3 text-sm font-medium text-stone-950">
                     Filter by price
                   </p>
 
@@ -358,7 +361,7 @@ const ProductsPage = () => {
                           minPrice: e.target.value,
                         }))
                       }
-                      className="rounded-xl border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500"
+                      className="rounded-xl border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                     />
 
                     <input
@@ -371,7 +374,7 @@ const ProductsPage = () => {
                           maxPrice: e.target.value,
                         }))
                       }
-                      className="rounded-xl border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500"
+                      className="rounded-xl border border-stone-300 px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                     />
                   </div>
 
@@ -379,7 +382,7 @@ const ProductsPage = () => {
                     <button
                       type="button"
                       onClick={() => setOpenDesktopMenu(null)}
-                      className="text-sm font-medium text-[#8B5E3C] hover:underline"
+                      className="text-sm font-semibold text-primary hover:underline"
                     >
                       Done
                     </button>
@@ -389,7 +392,7 @@ const ProductsPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-8 text-sm text-zinc-700">
+          <div className="flex items-center gap-6 text-sm text-stone-700">
             {/* Sort */}
             <div className="relative">
               <button
@@ -399,14 +402,14 @@ const ProductsPage = () => {
                     prev === "sort" ? null : "sort"
                   )
                 }
-                className="flex items-center gap-2 text-[15px] text-zinc-700 transition hover:text-zinc-900"
+                className="flex items-center gap-2 rounded-full px-3 py-2 text-[15px] text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
               >
                 <span>Sort by: {activeSortLabel}</span>
                 <ChevronDown className="h-4 w-4" />
               </button>
 
               {openDesktopMenu === "sort" && (
-                <div className="absolute right-0 top-full z-30 mt-4 w-60 rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl">
+                <div className="absolute right-0 top-full z-30 mt-4 w-60 rounded-2xl border border-stone-200 bg-white p-2 shadow-xl shadow-stone-950/10">
                   {sortOptions.map((option) => (
                     <button
                       key={option.value || "featured"}
@@ -418,12 +421,12 @@ const ProductsPage = () => {
                         }))
                         setOpenDesktopMenu(null)
                       }}
-                      className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-zinc-100 ${
+                      className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-stone-100 ${
                         filters.sort === option.value
-                          ? "bg-zinc-100 font-medium text-zinc-900"
+                          ? "bg-stone-100 font-medium text-stone-950"
                           : !filters.sort && option.value === ""
-                            ? "bg-zinc-100 font-medium text-zinc-900"
-                            : "text-zinc-700"
+                            ? "bg-stone-100 font-medium text-stone-950"
+                            : "text-stone-700"
                       }`}
                     >
                       {option.label}
@@ -434,7 +437,7 @@ const ProductsPage = () => {
             </div>
 
             {!loading && !error && (
-              <span className="text-[15px] text-zinc-500">
+              <span className="text-[15px] font-medium text-stone-500">
                 {totalCount} product{totalCount !== 1 ? "s" : ""}
               </span>
             )}
@@ -445,20 +448,20 @@ const ProductsPage = () => {
         <div className="mb-6 flex items-center justify-between gap-3 lg:hidden">
           <Button
             variant="outline"
-            className="rounded-full"
+            className="rounded-full bg-white/90"
             onClick={() => setIsMobileFilterOpen(true)}
           >
             <SlidersHorizontal className="mr-2 h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
-              <span className="ml-2 rounded-full bg-[#8B5E3C] px-2 py-0.5 text-xs text-white">
+              <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-white">
                 {activeFilterCount}
               </span>
             )}
           </Button>
 
           {!loading && !error && (
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm font-medium text-stone-500">
               {totalCount} product{totalCount !== 1 ? "s" : ""}
             </p>
           )}
@@ -470,7 +473,7 @@ const ProductsPage = () => {
           filters.sort) && (
           <div className="mb-6 flex flex-wrap items-center gap-2">
             {filters.category && currentCategory && (
-              <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm text-zinc-700 shadow-sm">
+              <span className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700 shadow-sm">
                 {currentCategory.name}
                 <button
                   type="button"
@@ -487,7 +490,7 @@ const ProductsPage = () => {
             )}
 
             {(filters.minPrice || filters.maxPrice) && (
-              <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm text-zinc-700 shadow-sm">
+              <span className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700 shadow-sm">
                 ₹{filters.minPrice || "0"} - ₹{filters.maxPrice || "∞"}
                 <button
                   type="button"
@@ -505,7 +508,7 @@ const ProductsPage = () => {
             )}
 
             {filters.sort && (
-              <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm text-zinc-700 shadow-sm">
+              <span className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-700 shadow-sm">
                 {activeSortLabel}
                 <button
                   type="button"
@@ -524,7 +527,7 @@ const ProductsPage = () => {
             <button
               type="button"
               onClick={handleReset}
-              className="text-sm font-medium text-red-500 hover:underline"
+              className="rounded-full px-2 py-1 text-sm font-semibold text-red-600 hover:bg-red-50"
             >
               Clear all
             </button>
@@ -542,12 +545,15 @@ const ProductsPage = () => {
               <ProductGrid products={productGridFixture} />
              </Skeleton>
           ) : error ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-center text-red-500 shadow-sm">
+            <div className="ki-soft-card rounded-2xl p-8 text-center text-red-600">
               {error}
             </div>
           ) : products.length === 0 ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-center text-zinc-500 shadow-sm">
+            <div className="ki-soft-card rounded-2xl p-10 text-center text-stone-500">
+              <p className="text-lg font-semibold text-stone-900">No products found</p>
+              <p className="mt-2 text-sm">
               No products found for the selected filters.
+              </p>
             </div>
           ) : (
             <>
@@ -564,17 +570,17 @@ const ProductsPage = () => {
 
       {/* Mobile Bottom Filter Sheet */}
       <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-        <SheetContent side="bottom" className="rounded-t-3xl px-0">
+        <SheetContent side="bottom" className="rounded-t-3xl border-stone-200 bg-[#f7f7f5] px-0">
           <div className="mx-auto w-full max-w-md px-5 pb-6 pt-2">
             <SheetHeader className="px-0 text-left">
-              <SheetTitle className="text-lg font-semibold text-zinc-900">
+              <SheetTitle className="text-lg font-semibold text-stone-950">
                 Filters
               </SheetTitle>
             </SheetHeader>
 
             <div className="mt-6 space-y-6">
               <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-700">
+                <label className="mb-2 block text-sm font-medium text-stone-700">
                   Category
                 </label>
                 <select
@@ -585,7 +591,7 @@ const ProductsPage = () => {
                       category: e.target.value,
                     }))
                   }
-                  className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm outline-none focus:border-zinc-500"
+                  className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                 >
                   <option value="">All Categories</option>
                   {categories.map((cat) => (
@@ -597,7 +603,7 @@ const ProductsPage = () => {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-700">
+                <label className="mb-2 block text-sm font-medium text-stone-700">
                   Price Range
                 </label>
 
@@ -612,7 +618,7 @@ const ProductsPage = () => {
                         minPrice: e.target.value,
                       }))
                     }
-                    className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm outline-none focus:border-zinc-500"
+                    className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                   />
 
                   <input
@@ -625,13 +631,13 @@ const ProductsPage = () => {
                         maxPrice: e.target.value,
                       }))
                     }
-                    className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm outline-none focus:border-zinc-500"
+                    className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-700">
+                <label className="mb-2 block text-sm font-medium text-stone-700">
                   Sort By
                 </label>
                 <select
@@ -642,7 +648,7 @@ const ProductsPage = () => {
                       sort: e.target.value,
                     }))
                   }
-                  className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm outline-none focus:border-zinc-500"
+                  className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
                 >
                   {sortOptions.map((option) => (
                     <option key={option.value || "featured"} value={option.value}>
@@ -663,7 +669,7 @@ const ProductsPage = () => {
                   </Button>
 
                   <Button
-                    className="h-11 flex-1 rounded-full bg-[#8B5E3C] text-white hover:bg-[#7A5234]"
+                    className="h-11 flex-1 rounded-full"
                     onClick={() => setIsMobileFilterOpen(false)}
                   >
                     Apply

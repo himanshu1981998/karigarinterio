@@ -30,7 +30,7 @@ const HomeCategories = () => {
   return (
     <div className="mb-12">
       <div className="mb-5">
-        <h2 className="text-2xl font-bold text-zinc-900">
+        <h2 className="font-display text-3xl font-bold text-stone-950">
           Shop by Category
         </h2>
       </div>
@@ -55,16 +55,16 @@ const CategoryGrid = ({ categories }) => (
             to={`/products?category=${cat.slug}`}
             className="group min-w-[180px] sm:min-w-0"
           >
-            <div className="overflow-hidden rounded-2xl bg-zinc-100 shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:shadow-md">
-              <div className="aspect-[4/3] overflow-hidden rounded-2xl">
+            <div className="ki-soft-card overflow-hidden rounded-xl p-0 transition duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_18px_42px_rgba(41,34,25,0.12)]">
+              <div className="ki-image-surface aspect-[4/3] overflow-hidden rounded-xl">
                 {cat.image ? (
                   <img
                     src={cat.image}
                     alt={cat.name}
-                    className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+                    className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.035]"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-zinc-200 text-sm font-medium text-zinc-500">
+                  <div className="flex h-full w-full items-center justify-center text-sm font-medium text-stone-500">
                     {cat.name}
                   </div>
                 )}
@@ -73,7 +73,7 @@ const CategoryGrid = ({ categories }) => (
 
             {/* Name below card */}
             <div className="mt-3 text-center">
-              <h3 className="text-base font-semibold tracking-tight text-zinc-900 sm:text-lg">
+              <h3 className="text-base font-semibold tracking-tight text-stone-950 sm:text-lg">
                 {cat.name}
               </h3>
             </div>

@@ -15,16 +15,16 @@ const ProductDetailContent = ({ product, showRecommendations = true }) => {
     product.images?.map((img) => img.image).filter(Boolean) || []
 
   return (
-    <div className="min-h-screen bg-zinc-100">
+    <div className="ki-page min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <div className="mb-6 flex flex-wrap gap-1 text-sm text-zinc-500">
-          <Link to="/" className="hover:text-zinc-700 hover:underline">
+        <div className="mb-6 flex flex-wrap gap-1 text-sm text-stone-500">
+          <Link to="/" className="hover:text-stone-800 hover:underline">
             Home
           </Link>
 
           <span>/</span>
 
-          <Link to="/products" className="hover:text-zinc-700 hover:underline">
+          <Link to="/products" className="hover:text-stone-800 hover:underline">
             Products
           </Link>
 
@@ -33,7 +33,7 @@ const ProductDetailContent = ({ product, showRecommendations = true }) => {
               <span>/</span>
               <Link
                 to={`/products?category=${product.category.slug}`}
-                className="hover:text-zinc-700 hover:underline"
+                className="hover:text-stone-800 hover:underline"
               >
                 {product.category.name}
               </Link>
@@ -42,17 +42,17 @@ const ProductDetailContent = ({ product, showRecommendations = true }) => {
 
           <span>/</span>
 
-          <span className="font-medium text-zinc-900">
+          <span className="font-medium text-stone-900">
             {product?.name}
           </span>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_420px] xl:grid-cols-[minmax(0,1.15fr)_440px] xl:gap-12">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_430px] xl:grid-cols-[minmax(0,1.12fr)_460px] xl:gap-10">
           <div>
             <ProductImageGallery images={galleryImages} />
           </div>
 
-          <div className="space-y-8 lg:sticky lg:top-24 lg:h-fit">
+          <div className="space-y-5 lg:sticky lg:top-24 lg:h-fit">
             <ProductInfo product={product} />
             <ProductDetailsPanel product={product} />
           </div>
@@ -128,7 +128,7 @@ const ProductDetailPage = () => {
   if (error || !product) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-10">
-        <div className="rounded-2xl border bg-white p-10 text-center text-zinc-500 shadow-sm">
+        <div className="ki-soft-card rounded-2xl p-10 text-center text-stone-500">
           <p className="text-lg font-medium">
             {error || "Product not found"}
           </p>

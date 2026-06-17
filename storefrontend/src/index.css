@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -51,24 +51,24 @@
 
 :root {
     --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
+    --background: oklch(0.975 0.004 85);
+    --foreground: oklch(0.19 0.018 70);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+    --card-foreground: oklch(0.19 0.018 70);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.19 0.018 70);
+    --primary: oklch(0.38 0.074 55);
     --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.94 0.018 82);
+    --secondary-foreground: oklch(0.29 0.04 75);
+    --muted: oklch(0.94 0.009 80);
+    --muted-foreground: oklch(0.48 0.025 75);
+    --accent: oklch(0.88 0.041 125);
+    --accent-foreground: oklch(0.26 0.045 95);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
+    --border: oklch(0.88 0.012 82);
+    --input: oklch(0.88 0.012 82);
+    --ring: oklch(0.53 0.081 62);
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
@@ -123,8 +123,40 @@
     @apply border-border outline-ring/50;
     }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: "Inter", "Hind", ui-sans-serif, system-ui, sans-serif;
     }
+
+  h1,
+  h2,
+  .font-display {
+    font-family: "Playfair Display", "Hind", Georgia, serif;
+    letter-spacing: 0;
+  }
+}
+
+@layer utilities {
+  .ki-page {
+    background:
+      radial-gradient(circle at top left, rgba(130, 105, 72, 0.08), transparent 30rem),
+      linear-gradient(180deg, #f7f7f5 0%, #f1f0ec 100%);
+  }
+
+  .ki-panel {
+    border: 1px solid rgba(77, 62, 45, 0.1);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 18px 45px rgba(42, 34, 25, 0.08);
+  }
+
+  .ki-soft-card {
+    border: 1px solid rgba(77, 62, 45, 0.1);
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(42, 34, 25, 0.07);
+  }
+
+  .ki-image-surface {
+    background: linear-gradient(135deg, #ece8df 0%, #f7f6f2 100%);
+  }
 }
 
 

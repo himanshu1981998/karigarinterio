@@ -73,7 +73,7 @@ const Home = () => {
   
 
 return (
-  <div>
+  <div className="ki-page">
     <Skeleton
       name="home-featured-carousel"
       loading={loading && featuredLoading}
@@ -95,7 +95,7 @@ return (
       <CustomBespokeSection />
 
       {products.length === 0 && !loading ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-center text-zinc-500 shadow-sm">
+        <div className="ki-soft-card rounded-2xl p-8 text-center text-stone-500">
           No products available.
         </div>
       ) : (

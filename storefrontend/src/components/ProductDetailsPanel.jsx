@@ -46,28 +46,29 @@ const ProductDetailsPanel = ({ product }) => {
     const normalized = name.toLowerCase()
 
     if (normalized.includes("dimension"))
-      return <Ruler className="h-5 w-5 text-zinc-600" />
+      return <Ruler className="h-4 w-4 text-primary" />
 
     if (normalized.includes("material"))
-      return <Leaf className="h-5 w-5 text-zinc-600" />
+      return <Leaf className="h-4 w-4 text-primary" />
 
     if (normalized.includes("finish"))
-      return <Paintbrush className="h-5 w-5 text-zinc-600" />
+      return <Paintbrush className="h-4 w-4 text-primary" />
 
     if (normalized.includes("shipping") || normalized.includes("delivery"))
-      return <Truck className="h-5 w-5 text-zinc-600" />
+      return <Truck className="h-4 w-4 text-primary" />
 
     if (normalized.includes("care"))
-      return <Heart className="h-5 w-5 text-zinc-600" />
+      return <Heart className="h-4 w-4 text-primary" />
 
-    return <Info className="h-5 w-5 text-zinc-600" />
+    return <Info className="h-4 w-4 text-primary" />
   }
 
   return (
-    <div className="space-y-8">
+    <div className="ki-panel rounded-2xl p-5 backdrop-blur sm:p-6">
       {/* Description */}
       {product.description && (
-        <div className="space-y-5 text-base leading-8 text-zinc-600 sm:text-lg sm:leading-10">
+        <div className="mb-6 space-y-5 text-sm leading-7 text-stone-600 sm:text-base sm:leading-8">
+          <h2 className="font-display text-2xl font-bold text-stone-950">Product Story</h2>
           <p>{product.description}</p>
         </div>
       )}
@@ -79,18 +80,20 @@ const ProductDetailsPanel = ({ product }) => {
             <AccordionItem
               key={`${spec.name}-${index}`}
               value={`item-${index}`}
-              className="border-b border-zinc-200"
+              className="border-b border-stone-200 last:border-b-0"
             >
-              <AccordionTrigger className="py-5 hover:no-underline">
+              <AccordionTrigger className="py-4 hover:no-underline">
                 <div className="flex items-center gap-3 text-left">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-100">
                   {getSpecIcon(spec.name)}
-                  <span className="text-base font-medium text-zinc-800">
+                  </span>
+                  <span className="text-sm font-semibold text-stone-900 sm:text-base">
                     {spec.name}
                   </span>
                 </div>
               </AccordionTrigger>
 
-              <AccordionContent className="pl-8 text-sm leading-6 text-zinc-600 sm:text-base">
+              <AccordionContent className="pl-11 text-sm leading-7 text-stone-600">
                 {spec.value}
               </AccordionContent>
             </AccordionItem>

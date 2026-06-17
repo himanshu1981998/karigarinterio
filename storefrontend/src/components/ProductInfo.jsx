@@ -3,6 +3,7 @@ import { useCartStore } from "@/store/cartStore"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
 import { useCheckoutStore } from "@/store/checkoutStore"
+import { PackageCheck, ShieldCheck, Truck } from "lucide-react"
 
 const ProductInfo = ({ product }) => {
   const quantity = 1
@@ -58,33 +59,39 @@ const ProductInfo = ({ product }) => {
   }
 
   return (
-    <div className="space-y-5 lg:space-y-6">
+    <div className="ki-panel rounded-2xl p-5 backdrop-blur sm:p-6 lg:p-7">
       
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl lg:text-4xl">
+        {product.category?.name && (
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
+            {product.category.name}
+          </p>
+        )}
+
+        <h1 className="font-display text-3xl font-bold leading-tight text-stone-950 sm:text-4xl lg:text-[2.75rem]">
           {product.name}
         </h1>
 
         {product.sku && (
-          <p className="mt-1 text-sm text-zinc-500">{product.sku}</p>
+          <p className="mt-2 text-sm font-medium text-stone-500">SKU: {product.sku}</p>
         )}
       </div>
 
       {/* Price */}
-      <div className="flex items-center gap-2">
-        <p className="text-xl font-bold">
+      <div className="mt-6 flex flex-wrap items-end gap-3">
+        <p className="text-3xl font-bold tracking-tight text-stone-950">
           ₹{price.toLocaleString()}
         </p>
 
         {hasMrp && (
-          <p className="text-sm line-through text-zinc-400">
+          <p className="mb-1 text-sm line-through text-stone-400">
             ₹{originalPrice.toLocaleString()}
           </p>
         )}
 
         {product.discount_percentage > 0 && (
-          <span className="rounded-xl bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-600">
+          <span className="mb-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-600 ring-1 ring-red-100">
             {product.discount_percentage}% OFF
           </span>
         )}
@@ -92,27 +99,42 @@ const ProductInfo = ({ product }) => {
 
       {/* Description */}
       {product.short_description && (
-        <p className="text-sm text-zinc-600">
+        <p className="mt-5 text-sm leading-7 text-stone-600 sm:text-base">
           {product.short_description}
         </p>
       )}
 
+      <div className="mt-6 grid gap-2 rounded-2xl border border-stone-200 bg-stone-50/70 p-3 text-sm text-stone-600">
+        <div className="flex items-center gap-2">
+          <Truck className="h-4 w-4 text-primary" />
+          <span>Delivery and installation support available</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-4 w-4 text-primary" />
+          <span>Secure checkout with COD and online payment</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <PackageCheck className="h-4 w-4 text-primary" />
+          <span>Built for everyday home use</span>
+        </div>
+      </div>
+
       {/* Buttons */}
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         
         {!cartItem ? (
           <Button
-            className="h-11 w-full rounded-full sm:flex-1"
+            className="h-12 w-full rounded-full sm:flex-1"
             onClick={handleAddToCart}
           >
             Add to Cart
           </Button>
         ) : (
-          <div className="flex h-11 w-full items-center justify-between rounded-full border px-4 sm:flex-1">
+          <div className="flex h-12 w-full items-center justify-between rounded-full border border-stone-300 bg-white px-4 shadow-sm sm:flex-1">
             
             <button
               onClick={() => decreaseQuantity(cartItem.id)}
-              className="text-lg"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100"
             >
               -
             </button>
@@ -123,7 +145,7 @@ const ProductInfo = ({ product }) => {
 
             <button
               onClick={() => increaseQuantity(cartItem.id)}
-              className="text-lg"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100"
             >
               +
             </button>
@@ -133,7 +155,7 @@ const ProductInfo = ({ product }) => {
 
         <Button
           variant="outline"
-          className="h-11 w-full rounded-full sm:flex-1"
+          className="h-12 w-full rounded-full bg-white sm:flex-1"
           onClick={handleBuyNow}
         >
           Buy Now

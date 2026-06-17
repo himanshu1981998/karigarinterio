@@ -4,12 +4,12 @@ const ImageTile = ({ src, alt, className = "", onOpen }) => (
   <button
     type="button"
     onClick={() => onOpen(src)}
-    className={`group relative overflow-hidden bg-[#f3f1ec] ${className}`}
+    className={`group ki-image-surface relative overflow-hidden ${className}`}
   >
     <img
       src={src}
       alt={alt}
-      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+      className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]"
     />
   </button>
 )
@@ -46,7 +46,7 @@ const ProductImageGallery = ({ images = [] }) => {
 
   if (validImages.length === 0) {
     return (
-      <div className="rounded-2xl border border-zinc-200 bg-white p-10 text-center text-sm text-zinc-500">
+      <div className="ki-soft-card rounded-2xl p-10 text-center text-sm text-stone-500">
         No images available
       </div>
     )
@@ -66,13 +66,13 @@ const ProductImageGallery = ({ images = [] }) => {
               key={`mobile-image-${index}`}
               type="button"
               onClick={() => setModalImage(img.src)}
-              className="group w-[88%] shrink-0 snap-center overflow-hidden rounded-sm bg-[#f3f1ec]"
+              className="group ki-soft-card w-[88%] shrink-0 snap-center overflow-hidden rounded-xl p-0"
             >
               <div className="aspect-[4/5] w-full overflow-hidden">
                 <img
                   src={img.src}
                   alt={`Product image ${index + 1}`}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]"
                 />
               </div>
             </button>
@@ -81,9 +81,9 @@ const ProductImageGallery = ({ images = [] }) => {
       </div>
 
       {/* DESKTOP / LAPTOP */}
-      <div className="hidden space-y-3 lg:block">
+      <div className="hidden space-y-4 lg:block">
         {/* Primary image - slightly less dominant */}
-        <div className="overflow-hidden rounded-sm bg-[#f3f1ec]">
+        <div className="ki-soft-card overflow-hidden rounded-xl p-0">
           <ImageTile
             src={mainImage}
             alt="Product image 1"
@@ -94,11 +94,11 @@ const ProductImageGallery = ({ images = [] }) => {
 
         {/* Row 2 */}
         {secondRow.length > 0 && (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {secondRow.map((img, index) => (
               <div
                 key={`second-row-${index}`}
-                className="overflow-hidden rounded-sm bg-[#f3f1ec]"
+                className="ki-soft-card overflow-hidden rounded-xl p-0"
               >
                 <ImageTile
                   src={img.src}
@@ -113,11 +113,11 @@ const ProductImageGallery = ({ images = [] }) => {
 
         {/* Row 3 */}
         {thirdRow.length > 0 && (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {thirdRow.map((img, index) => (
               <div
                 key={`third-row-${index}`}
-                className="overflow-hidden rounded-sm bg-[#f3f1ec]"
+                className="ki-soft-card overflow-hidden rounded-xl p-0"
               >
                 <ImageTile
                   src={img.src}
@@ -134,17 +134,17 @@ const ProductImageGallery = ({ images = [] }) => {
       {/* Modal */}
       {modalImage && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-950/85 p-4 backdrop-blur-sm"
           onClick={() => setModalImage(null)}
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden bg-white"
+            className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl shadow-black/30"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setModalImage(null)}
-              className="absolute right-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-zinc-800 shadow"
+              className="absolute right-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-stone-800 shadow"
             >
               Close
             </button>

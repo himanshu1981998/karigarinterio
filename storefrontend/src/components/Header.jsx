@@ -103,7 +103,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-white/90 shadow-sm shadow-stone-950/5 backdrop-blur-xl">
         {/* ================= ROW 1 ================= */}
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
           {/* LEFT → MOBILE MENU + LOGO */}
@@ -134,7 +134,7 @@ const Header = () => {
 
 <Link to="/" className="flex min-w-0 items-center gap-2 whitespace-nowrap">
   <img src={logo} alt="Karigar Logo" className="h-8 w-8" />
-  <span className="text-sm font-semibold tracking-tight whitespace-nowrap sm:text-lg">
+  <span className="text-sm font-semibold tracking-tight whitespace-nowrap text-stone-950 sm:text-lg">
     कारीगर <span className="font-medium">interio</span>
   </span>
 </Link>
@@ -180,7 +180,7 @@ const Header = () => {
             >
               <ShoppingBag className="h-5 w-5" />
               {totalItems > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#8B5E3C] text-xs text-white">
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">
                   {totalItems > 99 ? "99+" : totalItems}
                 </span>
               )}
@@ -204,32 +204,32 @@ const Header = () => {
 
 
         {/* ================= ROW 2 (DESKTOP NAV) ================= */}
-        <div className="hidden border-t border-zinc-100 md:block">
-          <nav className="mx-auto flex h-12 max-w-7xl items-center justify-center gap-8 text-sm font-medium text-zinc-700">
+        <div className="hidden border-t border-stone-100 md:block">
+          <nav className="mx-auto flex h-12 max-w-7xl items-center justify-center gap-8 text-sm font-medium text-stone-700">
             <Link
               to="/products?category=living-room"
-              className="transition hover:text-black"
+              className="transition hover:text-primary"
             >
               Living Room
             </Link>
 
             <Link
               to="/products?category=bedroom"
-              className="transition hover:text-black"
+              className="transition hover:text-primary"
             >
               Bedroom
             </Link>
 
             <Link
               to="/products?category=dining"
-              className="transition hover:text-black"
+              className="transition hover:text-primary"
             >
               Dining
             </Link>
 
 
 
-            <Link to="/services" className="transition hover:text-black">
+            <Link to="/services" className="transition hover:text-primary">
               Services
             </Link>
 
@@ -259,20 +259,20 @@ function SearchBox({
     <div className="relative w-full max-w-xl">
       <form
         onSubmit={handleSearch}
-        className="flex items-center rounded-full border border-zinc-200 bg-white px-4 py-2 shadow-sm focus-within:border-[#8B5E3C]"
+        className="flex items-center rounded-full border border-stone-200 bg-white px-4 py-2 shadow-sm shadow-stone-950/5 transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15"
       >
-        <Search className="h-4 w-4 shrink-0 text-zinc-400" />
+        <Search className="h-4 w-4 shrink-0 text-stone-400" />
         <input
           type="text"
           placeholder="Search for products..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="ml-2 w-full bg-transparent text-sm outline-none placeholder:text-zinc-400"
+          className="ml-2 w-full bg-transparent text-sm text-stone-800 outline-none placeholder:text-stone-400"
         />
       </form>
 
       {(search || isSkeletonCapture) && (
-        <div className="absolute top-full z-50 mt-2 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg">
+        <div className="absolute top-full z-50 mt-2 w-full overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl shadow-stone-950/10">
           {(loading || isSkeletonCapture) && (
             <Skeleton
               name="header-search-results"
@@ -285,7 +285,7 @@ function SearchBox({
               <button
               key={index}
               type="button"
-              className="block w-full px-4 py-2 text-left text-sm text-zinc-800"
+              className="block w-full px-4 py-2 text-left text-sm text-stone-800"
                  >
               Premium Wooden Chair
             </button>
@@ -295,7 +295,7 @@ function SearchBox({
           )}
 
           {!loading && results.length === 0 && (
-            <p className="p-3 text-sm text-zinc-500">No results found</p>
+            <p className="p-3 text-sm text-stone-500">No results found</p>
           )}
 
           {!loading &&
@@ -304,7 +304,7 @@ function SearchBox({
                 key={item.id}
                 type="button"
                 onClick={() => handleResultClick(item.slug)}
-                className="block w-full px-4 py-2 text-left text-sm text-zinc-800 transition hover:bg-zinc-100"
+                className="block w-full px-4 py-2 text-left text-sm text-stone-800 transition hover:bg-stone-100"
               >
                 {item.name}
               </button>
@@ -329,12 +329,12 @@ function MobileMenu({
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
 
   return (
-    <div className="flex h-full flex-col bg-white">
-      <div className="border-b px-5 py-4">
-        <h2 className="text-lg font-semibold text-zinc-900">Menu</h2>
+    <div className="flex h-full flex-col bg-[#f7f7f5]">
+      <div className="border-b border-stone-200 px-5 py-4">
+        <h2 className="text-lg font-semibold text-stone-950">Menu</h2>
       </div>
 
-      <div className="border-b px-5 py-4">
+      <div className="border-b border-stone-200 px-5 py-4">
         <SearchBox
           search={search}
           setSearch={setSearch}
@@ -350,7 +350,7 @@ function MobileMenu({
           <Link
             to="/"
             onClick={closeMenu}
-            className="block rounded-xl px-3 py-3 text-sm font-medium text-zinc-900 transition hover:bg-zinc-100"
+            className="block rounded-xl px-3 py-3 text-sm font-medium text-stone-950 transition hover:bg-stone-100"
           >
             Home
           </Link>
@@ -358,7 +358,7 @@ function MobileMenu({
           <button
             type="button"
             onClick={() => setIsCategoriesOpen((prev) => !prev)}
-            className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium text-zinc-900 transition hover:bg-zinc-100"
+            className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium text-stone-950 transition hover:bg-stone-100"
           >
             <span>Categories</span>
             <ChevronDown
@@ -369,11 +369,11 @@ function MobileMenu({
           </button>
 
           {isCategoriesOpen && (
-            <div className="ml-3 space-y-1 border-l border-zinc-200 pl-3">
+            <div className="ml-3 space-y-1 border-l border-stone-200 pl-3">
               <Link
                 to="/products?category=living-room"
                 onClick={closeMenu}
-                className="block rounded-lg px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900"
+                className="block rounded-lg px-3 py-2.5 text-sm text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
               >
                 Living Room
               </Link>
@@ -381,7 +381,7 @@ function MobileMenu({
               <Link
                 to="/products?category=bedroom"
                 onClick={closeMenu}
-                className="block rounded-lg px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900"
+                className="block rounded-lg px-3 py-2.5 text-sm text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
               >
                 Bedroom
               </Link>
@@ -389,7 +389,7 @@ function MobileMenu({
               <Link
                 to="/products?category=dining"
                 onClick={closeMenu}
-                className="block rounded-lg px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900"
+                className="block rounded-lg px-3 py-2.5 text-sm text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
               >
                 Dining
               </Link>
@@ -398,11 +398,11 @@ function MobileMenu({
             </div>
           )}
 
-          <div className="mt-3 border-t border-zinc-200 pt-3">
+          <div className="mt-3 border-t border-stone-200 pt-3">
             <Link
               to="/services"
               onClick={closeMenu}
-              className="block rounded-xl px-3 py-3 text-sm font-medium text-zinc-900 transition hover:bg-zinc-100"
+              className="block rounded-xl px-3 py-3 text-sm font-medium text-stone-950 transition hover:bg-stone-100"
             >
               Services
             </Link>
@@ -418,12 +418,12 @@ function MobileMenu({
         </div>
       </div>
 
-      <div className="border-t px-5 py-4">
+      <div className="border-t border-stone-200 px-5 py-4">
         {isLoggedIn ? (
           <Link
             to="/profile"
             onClick={closeMenu}
-            className="block rounded-xl border border-zinc-200 px-4 py-2.5 text-center text-sm font-medium text-zinc-900 transition hover:bg-zinc-50"
+            className="block rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-center text-sm font-medium text-stone-950 transition hover:bg-stone-50"
           >
             My Account
           </Link>

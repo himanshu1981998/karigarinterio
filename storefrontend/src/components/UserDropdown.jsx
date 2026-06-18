@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import testprofilepic from "../assets/testprofilepic.png"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,10 +13,29 @@ import { LayoutDashboard, LogOutIcon, PackageIcon, UserIcon } from "lucide-react
 
 import { useAuthStore } from "@/store/authStore"
 
-export function UserDropdown() {
-const {logOut,profile,user,isAdmin}=useAuthStore()
+const getProfileInitials = (profile) => {
+  const firstName = profile?.first_name?.trim() || ""
+  const lastName = profile?.last_name?.trim() || ""
 
-const displayName=profile?.first_name||user?.phone||"user"
+  if (firstName && lastName) {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase()
+  }
+
+  if (firstName.length >= 2) {
+    return firstName.slice(0, 2).toUpperCase()
+  }
+
+  if (firstName.length === 1) {
+    return firstName[0].toUpperCase()
+  }
+
+  return ""
+}
+
+export function UserDropdown() {
+const {logOut,profile,isAdmin}=useAuthStore()
+
+const initials = getProfileInitials(profile)
 
   const handleLogout = () => {
     logOut()
@@ -31,11 +49,11 @@ const displayName=profile?.first_name||user?.phone||"user"
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className=" relative h-10 w-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 ">
-          <Avatar className="h-9 w-9 border border-gray-200 hover:border-gray-900 transition">
-            <AvatarImage src={testprofilepic} alt="User"/>
-            {/*change the initials after getting name*/}
-            <AvatarFallback>{displayName}</AvatarFallback>
+        <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full hover:bg-stone-100 dark:hover:bg-gray-800">
+          <Avatar className="h-9 w-9 border border-stone-200 transition hover:border-primary">
+            <AvatarFallback className="bg-[#8B5E3C] text-xs font-semibold uppercase tracking-wide text-white">
+              {initials || <UserIcon className="h-4 w-4" />}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

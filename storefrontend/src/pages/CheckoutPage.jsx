@@ -500,7 +500,7 @@ const CheckoutPage = () => {
             <div className="order-2 space-y-6 lg:order-1">
               {/* Address Section */}
               <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-6">
-                <div className="mb-5 flex items-center justify-between">
+                <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                   <h2 className="text-lg font-semibold text-zinc-900">
                     Delivery Address
                   </h2>
@@ -554,8 +554,8 @@ const CheckoutPage = () => {
                               : "border-zinc-200"
                           }`}
                         >
-                          <div className="flex justify-between">
-                            <div className="flex gap-3">
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div className="flex min-w-0 flex-1 gap-3">
                               <input
                                 type="radio"
                                 name="checkout_address"
@@ -567,10 +567,10 @@ const CheckoutPage = () => {
                                 className="mt-1"
                               />
 
-                              <Icon className="mt-1 h-5 w-5 text-zinc-600" />
+                              <Icon className="mt-1 h-5 w-5 shrink-0 text-zinc-600" />
 
-                              <div>
-                                <div className="flex items-center gap-2 flex-wrap">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex flex-wrap items-center gap-2">
                                   <p className="font-medium text-zinc-900">
                                     {address.full_name}
                                   </p>
@@ -582,7 +582,7 @@ const CheckoutPage = () => {
                                   )}
                                 </div>
 
-                                <p className="text-sm text-zinc-600">
+                                <p className="break-words text-sm leading-6 text-zinc-600">
                                   {address.address_line}, {address.city},{" "}
                                   {address.state} - {address.pincode}
                                 </p>
@@ -593,7 +593,7 @@ const CheckoutPage = () => {
                               </div>
                             </div>
 
-                            <div className="flex gap-1">
+                            <div className="flex shrink-0 justify-end gap-1 self-end sm:self-start">
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -602,6 +602,7 @@ const CheckoutPage = () => {
                                   openEditAddressModal(address)
                                 }}
                                 className="rounded-lg p-2 hover:bg-zinc-100"
+                                aria-label="Edit address"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -614,6 +615,7 @@ const CheckoutPage = () => {
                                   handleDeleteAddress(address.id)
                                 }}
                                 className="rounded-lg p-2 hover:bg-zinc-100"
+                                aria-label="Delete address"
                               >
                                 <Trash2 className="h-4 w-4 text-red-500" />
                               </button>
@@ -862,15 +864,20 @@ const CheckoutPage = () => {
               Set as default address
             </label>
 
-            <div className="flex justify-end gap-3">
-              <Button type="button" variant="outline" onClick={resetAddressModal}>
+            <div className="grid gap-3 sm:flex sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={resetAddressModal}
+                className="rounded-xl sm:min-w-28"
+              >
                 Cancel
               </Button>
 
               <Button
                 type="submit"
                 disabled={addressSaving}
-                className="bg-[#8B5E3C] text-white hover:bg-[#7A5234]"
+                className="rounded-xl bg-[#8B5E3C] text-white hover:bg-[#7A5234] sm:min-w-36"
               >
                 {addressSaving
                   ? editingAddressId

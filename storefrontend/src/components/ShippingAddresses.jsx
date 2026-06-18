@@ -143,7 +143,7 @@ const ShippingAddresses = ({ selectedAddressId, onSelect }) => {
   return (
     <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
       {/* Header */}
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-lg font-semibold text-zinc-900">
           Delivery Address
         </h2>
@@ -180,13 +180,13 @@ const ShippingAddresses = ({ selectedAddressId, onSelect }) => {
                     : "border-zinc-200"
                 }`}
               >
-                <div className="flex justify-between">
-                  <div className="flex gap-3">
-                    <Icon className="mt-1 h-5 w-5 text-zinc-600" />
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex min-w-0 flex-1 gap-3">
+                    <Icon className="mt-1 h-5 w-5 shrink-0 text-zinc-600" />
 
-                    <div>
+                    <div className="min-w-0 flex-1">
                       {/* Name + Default badge */}
-                      <div className="flex items-center gap-2 flex-wrap">
+                      <div className="flex flex-wrap items-center gap-2">
                         <p className="font-medium text-zinc-900">
                           {address.full_name}
                         </p>
@@ -198,7 +198,7 @@ const ShippingAddresses = ({ selectedAddressId, onSelect }) => {
                         )}
                       </div>
 
-                      <p className="text-sm text-zinc-600">
+                      <p className="break-words text-sm leading-6 text-zinc-600">
                         {address.address_line}, {address.city},{" "}
                         {address.state} - {address.pincode}
                       </p>
@@ -210,23 +210,27 @@ const ShippingAddresses = ({ selectedAddressId, onSelect }) => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-1">
+                  <div className="flex shrink-0 justify-end gap-1 self-end sm:self-start">
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation()
                         handleEditClick(address)
                       }}
-                      className="p-2 hover:bg-zinc-100 rounded-lg"
+                      className="rounded-lg p-2 hover:bg-zinc-100"
+                      aria-label="Edit address"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
 
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation()
                         handleDeleteClick(address.id)
                       }}
-                      className="p-2 hover:bg-zinc-100 rounded-lg"
+                      className="rounded-lg p-2 hover:bg-zinc-100"
+                      aria-label="Delete address"
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </button>
@@ -242,12 +246,12 @@ const ShippingAddresses = ({ selectedAddressId, onSelect }) => {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-lg rounded-2xl bg-white p-5">
-            <div className="mb-4 flex justify-between">
+            <div className="mb-4 flex items-center justify-between gap-3">
               <h3 className="font-semibold text-zinc-900">
                 {editingId ? "Edit Address" : "Add Address"}
               </h3>
 
-              <button onClick={resetForm}>
+              <button type="button" onClick={resetForm} aria-label="Close address form">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -352,13 +356,24 @@ const ShippingAddresses = ({ selectedAddressId, onSelect }) => {
                 Set as default address
               </label>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-xl bg-[#8B5E3C] text-white"
-              >
-                {loading ? "Saving..." : "Save Address"}
-              </Button>
+              <div className="grid gap-3 sm:flex sm:justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={resetForm}
+                  className="rounded-xl sm:min-w-28"
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-xl bg-[#8B5E3C] text-white sm:min-w-36"
+                >
+                  {loading ? "Saving..." : "Save Address"}
+                </Button>
+              </div>
             </form>
           </div>
         </div>

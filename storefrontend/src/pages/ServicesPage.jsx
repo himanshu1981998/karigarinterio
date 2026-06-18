@@ -1,5 +1,7 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
+  ChevronDown,
+  X,
   Wrench,
   Hammer,
   Zap,
@@ -42,6 +44,27 @@ const ServicesPage = () => {
   const [selectedServices, setSelectedServices] = useState([])
   const [formData, setFormData] = useState(initialForm)
   const [loading, setLoading] = useState(false)
+  const [isServiceDropdownOpen, setIsServiceDropdownOpen] = useState(false)
+  const serviceDropdownRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        serviceDropdownRef.current &&
+        !serviceDropdownRef.current.contains(event.target)
+      ) {
+        setIsServiceDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("touchstart", handleClickOutside)
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("touchstart", handleClickOutside)
+    }
+  }, [])
 
   const toggleService = (serviceId) => {
     setSelectedServices((prev) =>
@@ -95,6 +118,7 @@ const ServicesPage = () => {
 
       setSelectedServices([])
       setFormData(initialForm)
+      setIsServiceDropdownOpen(false)
     } catch (error) {
       const data = error?.response?.data || {}
 
@@ -114,6 +138,10 @@ const ServicesPage = () => {
       setLoading(false)
     }
   }
+
+  const selectedServiceLabels = servicesList
+    .filter((service) => selectedServices.includes(service.id))
+    .map((service) => service.label)
 
   return (
     <div className="min-h-screen bg-zinc-100">
@@ -140,7 +168,97 @@ const ServicesPage = () => {
               Select Services
             </h2>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div ref={serviceDropdownRef} className="relative mt-5 sm:hidden">
+              <button
+                type="button"
+                onClick={() => setIsServiceDropdownOpen((prev) => !prev)}
+                className="flex w-full items-center justify-between rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-left shadow-sm transition hover:border-zinc-300"
+                aria-expanded={isServiceDropdownOpen}
+                aria-controls="mobile-service-options"
+              >
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold text-zinc-900">
+                    {selectedServices.length > 0
+                      ? `${selectedServices.length} service${selectedServices.length > 1 ? "s" : ""} selected`
+                      : "Select services"}
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-zinc-500">
+                    {selectedServiceLabels.length > 0
+                      ? selectedServiceLabels.join(", ")
+                      : "Choose one or more services"}
+                  </span>
+                </span>
+
+                <ChevronDown
+                  className={`ml-3 h-4 w-4 shrink-0 text-zinc-500 transition-transform ${
+                    isServiceDropdownOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                />
+              </button>
+
+              {isServiceDropdownOpen && (
+                <div
+                  id="mobile-service-options"
+                  role="listbox"
+                  aria-multiselectable="true"
+                  className="absolute left-0 right-0 top-full z-20 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl"
+                >
+                  {servicesList.map((service) => {
+                    const isActive = selectedServices.includes(service.id)
+
+                    return (
+                      <button
+                        key={service.id}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => toggleService(service.id)}
+                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                          isActive
+                            ? "bg-[#8B5E3C]/5 text-zinc-950"
+                            : "text-zinc-700 hover:bg-zinc-50"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${
+                            isActive
+                              ? "border-[#8B5E3C] bg-[#8B5E3C]"
+                              : "border-zinc-300 bg-white"
+                          }`}
+                        >
+                          {isActive && (
+                            <span className="h-2 w-2 rounded-sm bg-white" />
+                          )}
+                        </span>
+                        <span className="text-sm font-medium">
+                          {service.label}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+
+              {selectedServiceLabels.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {servicesList
+                    .filter((service) => selectedServices.includes(service.id))
+                    .map((service) => (
+                      <button
+                        key={service.id}
+                        type="button"
+                        onClick={() => toggleService(service.id)}
+                        className="inline-flex items-center gap-1 rounded-full bg-[#8B5E3C]/10 px-2.5 py-1 text-xs font-medium text-[#7A5234]"
+                      >
+                        {service.label}
+                        <X className="h-3 w-3" />
+                      </button>
+                    ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 hidden gap-4 sm:grid sm:grid-cols-2 xl:grid-cols-3">
               {servicesList.map((service) => {
                 const Icon = service.icon
                 const isActive = selectedServices.includes(service.id)

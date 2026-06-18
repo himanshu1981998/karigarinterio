@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import F
+from django.db.models import F, Q
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -160,7 +160,16 @@ class ProductListView(generics.ListAPIView):
 
     #  Search filter
     if search:
-        queryset = queryset.filter(name__icontains=search)
+        search_term = search.strip()
+        queryset = queryset.filter(
+            Q(name__icontains=search_term)
+            | Q(sku__icontains=search_term)
+            | Q(short_description__icontains=search_term)
+            | Q(description__icontains=search_term)
+            | Q(material_summary__icontains=search_term)
+            | Q(finish__icontains=search_term)
+            | Q(category__name__icontains=search_term)
+        ).distinct()
 
     #  Price filters
     if min_price:

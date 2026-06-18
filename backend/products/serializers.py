@@ -42,6 +42,7 @@ class ProductSpecificationSerializer(serializers.ModelSerializer):
 class ProductListSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     primary_image = serializers.SerializerMethodField()
+    images = ProductImageSerializer(many=True, read_only=True)
     discount_percentage = serializers.ReadOnlyField()
 
     class Meta:
@@ -59,6 +60,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             "is_featured",
             "category",
             "primary_image",
+            "images",
         ]
 
     def get_primary_image(self, obj):

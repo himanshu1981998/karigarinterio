@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   ChevronDown,
   Menu,
   Search,
   ShoppingBag,
   User,
+  X,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { Skeleton } from "boneyard-js/react"
@@ -30,6 +31,9 @@ import { fetchProducts } from "@/lib/productApi.js"
 import { SearchResultsSkeleton } from "@/components/skeletons/BoneyardSkeletons"
 import { isBoneyardBuild } from "@/lib/boneyardBuild"
 
+const RECENT_SEARCHES_KEY = "karigar_recent_searches"
+const MAX_RECENT_SEARCHES = 5
+
 const Header = () => {
   const navigate = useNavigate()
 
@@ -48,51 +52,127 @@ const Header = () => {
   const [search, setSearch] = useState("")
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
+  const [searchError, setSearchError] = useState("")
+  const [recentSearches, setRecentSearches] = useState([])
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const debouncedSearch = useDebounce(search, 400)
 
   useEffect(() => {
+    try {
+      const storedSearches = JSON.parse(
+        window.localStorage.getItem(RECENT_SEARCHES_KEY) || "[]"
+      )
+
+      if (Array.isArray(storedSearches)) {
+        setRecentSearches(
+          storedSearches
+            .filter((item) => typeof item === "string" && item.trim())
+            .slice(0, MAX_RECENT_SEARCHES)
+        )
+      }
+    } catch {
+      setRecentSearches([])
+    }
+  }, [])
+
+  useEffect(() => {
     if (!debouncedSearch.trim()) {
       setResults([])
       setLoading(false)
+      setSearchError("")
       return
     }
+
+    const controller = new AbortController()
 
     const loadResults = async () => {
       try {
         setLoading(true)
+        setSearchError("")
 
-        const data = await fetchProducts({
-          search: debouncedSearch,
-          limit: 6,
-        })
+        const data = await fetchProducts(
+          {
+            search: debouncedSearch,
+            pageSize: 6,
+          },
+          {
+            signal: controller.signal,
+          }
+        )
 
         setResults(data?.results || data || [])
       } catch (err) {
-        console.error("Search error:", err)
-        setResults([])
+        if (err.name !== "CanceledError") {
+          console.error("Search error:", err)
+          setSearchError("Search failed, try again")
+          setResults([])
+        }
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) {
+          setLoading(false)
+        }
       }
     }
 
     loadResults()
+
+    return () => controller.abort()
   }, [debouncedSearch])
+
+  const saveRecentSearch = (value) => {
+    const term = value.trim()
+    if (!term) return
+
+    setRecentSearches((prev) => {
+      const nextSearches = [
+        term,
+        ...prev.filter((item) => item.toLowerCase() !== term.toLowerCase()),
+      ].slice(0, MAX_RECENT_SEARCHES)
+
+      try {
+        window.localStorage.setItem(
+          RECENT_SEARCHES_KEY,
+          JSON.stringify(nextSearches)
+        )
+      } catch {
+        // Local storage can fail in private browsing; search should still work.
+      }
+
+      return nextSearches
+    })
+  }
+
+  const clearRecentSearches = () => {
+    setRecentSearches([])
+
+    try {
+      window.localStorage.removeItem(RECENT_SEARCHES_KEY)
+    } catch {
+      // Ignore storage errors; UI state is already cleared.
+    }
+  }
 
   const clearSearch = () => {
     setSearch("")
     setResults([])
     setLoading(false)
+    setSearchError("")
   }
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    if (!search.trim()) return
+  const handleSearch = (event, value = search) => {
+    event?.preventDefault?.()
+    const term = value.trim()
+    if (!term) return
 
-    navigate(`/products?search=${encodeURIComponent(search.trim())}`)
+    saveRecentSearch(term)
+    navigate(`/products?search=${encodeURIComponent(term)}`)
     clearSearch()
     setIsMobileMenuOpen(false)
+  }
+
+  const handleRecentSearchClick = (term) => {
+    handleSearch(null, term)
   }
 
   const handleResultClick = (slug) => {
@@ -104,9 +184,7 @@ const Header = () => {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-white/90 shadow-sm shadow-stone-950/5 backdrop-blur-xl">
-        {/* ================= ROW 1 ================= */}
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
-          {/* LEFT → MOBILE MENU + LOGO */}
           <div className="flex flex-1 items-center gap-2">
             <div className="md:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -123,36 +201,44 @@ const Header = () => {
                     closeMenu={() => setIsMobileMenuOpen(false)}
                     search={search}
                     setSearch={setSearch}
+                    clearSearch={clearSearch}
                     results={results}
                     loading={loading}
+                    searchError={searchError}
+                    recentSearches={recentSearches}
+                    clearRecentSearches={clearRecentSearches}
                     handleSearch={handleSearch}
+                    handleRecentSearchClick={handleRecentSearchClick}
                     handleResultClick={handleResultClick}
                   />
                 </SheetContent>
               </Sheet>
             </div>
 
-<Link to="/" className="flex min-w-0 items-center gap-2 whitespace-nowrap">
-  <img src={logo} alt="Karigar Logo" className="h-8 w-8" />
-  <span className="text-sm font-semibold tracking-tight whitespace-nowrap text-stone-950 sm:text-lg">
-    कारीगर <span className="font-medium">interio</span>
-  </span>
-</Link>
+            <Link to="/" className="flex min-w-0 items-center gap-2 whitespace-nowrap">
+              <img src={logo} alt="Karigar Logo" className="h-8 w-8" />
+              <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-stone-950 sm:text-lg">
+                कारीगर <span className="font-medium">interio</span>
+              </span>
+            </Link>
           </div>
 
-          {/* CENTER → DESKTOP SEARCH */}
           <div className="hidden flex-[2] justify-center md:flex">
             <SearchBox
               search={search}
               setSearch={setSearch}
+              clearSearch={clearSearch}
               results={results}
               loading={loading}
+              searchError={searchError}
+              recentSearches={recentSearches}
+              clearRecentSearches={clearRecentSearches}
               handleSearch={handleSearch}
+              handleRecentSearchClick={handleRecentSearchClick}
               handleResultClick={handleResultClick}
             />
           </div>
 
-          {/* RIGHT → ICONS */}
           <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
             <a
               href="https://wa.me/919876543210?text=Hi%20Karigar%20Interio"
@@ -201,9 +287,6 @@ const Header = () => {
           </div>
         </div>
 
-
-
-        {/* ================= ROW 2 (DESKTOP NAV) ================= */}
         <div className="hidden border-t border-stone-100 md:block">
           <nav className="mx-auto flex h-12 max-w-7xl items-center justify-center gap-8 text-sm font-medium text-stone-700">
             <Link
@@ -227,13 +310,11 @@ const Header = () => {
               Dining
             </Link>
 
-
-
             <Link to="/services" className="transition hover:text-primary">
               Services
             </Link>
 
-            <Link to="/products?sale=true" className="transition hover:text-red-700 text-red-600">
+            <Link to="/products?sale=true" className="text-red-600 transition hover:text-red-700">
               Sale
             </Link>
           </nav>
@@ -248,17 +329,114 @@ const Header = () => {
 function SearchBox({
   search,
   setSearch,
+  clearSearch,
   results,
   loading,
+  searchError,
+  recentSearches,
+  clearRecentSearches,
   handleSearch,
+  handleRecentSearchClick,
   handleResultClick,
 }) {
   const isSkeletonCapture = isBoneyardBuild()
+  const wrapperRef = useRef(null)
+  const handledEnterRef = useRef(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(-1)
+
+  const query = search.trim()
+  const hasQuery = Boolean(query)
+  const showRecentSearches = !hasQuery && recentSearches.length > 0
+  const showSearchResults = hasQuery || isSkeletonCapture
+  const showDropdown = isOpen && (showRecentSearches || showSearchResults)
+  const availableResults = !loading && !searchError ? results : []
+  const safeActiveIndex =
+    activeIndex >= 0 && activeIndex < availableResults.length ? activeIndex : -1
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsOpen(false)
+        setActiveIndex(-1)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  const openProductResult = (item) => {
+    if (!item?.slug) return
+    setIsOpen(false)
+    setActiveIndex(-1)
+    handleResultClick(item.slug)
+  }
+
+  const submitSearch = (event, value = search) => {
+    setIsOpen(false)
+    setActiveIndex(-1)
+    handleSearch(event, value)
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault()
+      setIsOpen(false)
+      setActiveIndex(-1)
+      return
+    }
+
+    if (!hasQuery || availableResults.length === 0) return
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault()
+      setIsOpen(true)
+      setActiveIndex((prev) =>
+        prev >= availableResults.length - 1 ? 0 : prev + 1
+      )
+      return
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault()
+      setIsOpen(true)
+      setActiveIndex((prev) =>
+        prev <= 0 ? availableResults.length - 1 : prev - 1
+      )
+      return
+    }
+
+    if (event.key === "Enter" && safeActiveIndex >= 0) {
+      event.preventDefault()
+      handledEnterRef.current = true
+      openProductResult(availableResults[safeActiveIndex])
+      return
+    }
+
+    if (event.key === "Enter" && hasQuery) {
+      event.preventDefault()
+      handledEnterRef.current = true
+      submitSearch(event)
+    }
+  }
+
+  const handleKeyUp = (event) => {
+    if (event.key !== "Enter" || !hasQuery) return
+
+    if (handledEnterRef.current) {
+      handledEnterRef.current = false
+      return
+    }
+
+    event.preventDefault()
+    submitSearch(event)
+  }
 
   return (
-    <div className="relative w-full max-w-xl">
+    <div ref={wrapperRef} className="relative w-full max-w-xl">
       <form
-        onSubmit={handleSearch}
+        onSubmit={submitSearch}
         className="flex items-center rounded-full border border-stone-200 bg-white px-4 py-2 shadow-sm shadow-stone-950/5 transition focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15"
       >
         <Search className="h-4 w-4 shrink-0 text-stone-400" />
@@ -266,49 +444,129 @@ function SearchBox({
           type="text"
           placeholder="Search for products..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setIsOpen(true)
+            setActiveIndex(-1)
+          }}
+          onFocus={() => setIsOpen(true)}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
           className="ml-2 w-full bg-transparent text-sm text-stone-800 outline-none placeholder:text-stone-400"
+          role="combobox"
+          aria-expanded={showDropdown}
+          aria-autocomplete="list"
         />
+        {search && (
+          <button
+            type="button"
+            onClick={() => {
+              clearSearch()
+              setIsOpen(false)
+            }}
+            className="ml-2 rounded-full p-1 text-stone-400 transition hover:bg-stone-100 hover:text-stone-700"
+            aria-label="Clear search"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
       </form>
 
-      {(search || isSkeletonCapture) && (
-        <div className="absolute top-full z-50 mt-2 w-full overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl shadow-stone-950/10">
-          {(loading || isSkeletonCapture) && (
-            <Skeleton
-              name="header-search-results"
-              loading={loading || isSkeletonCapture}
-              fallback={<SearchResultsSkeleton />}
-              fixture={<SearchResultsSkeleton />}
-            >
-              <div>
-                {Array.from({ length: 5 }).map((_, index) => (
-              <button
-              key={index}
-              type="button"
-              className="block w-full px-4 py-2 text-left text-sm text-stone-800"
-                 >
-              Premium Wooden Chair
-            </button>
-               ))}
+      {showDropdown && (
+        <div className="absolute top-full z-50 mt-2 max-h-[70vh] w-full overflow-y-auto rounded-2xl border border-stone-200 bg-white shadow-xl shadow-stone-950/10">
+          {showRecentSearches && (
+            <div className="p-2">
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
+                  Recent searches
+                </p>
+                <button
+                  type="button"
+                  onClick={clearRecentSearches}
+                  className="text-xs font-semibold text-primary hover:underline"
+                >
+                  Clear
+                </button>
               </div>
-            </Skeleton>
+
+              {recentSearches.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false)
+                    handleRecentSearchClick(item)
+                  }}
+                  className="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-stone-800 transition hover:bg-stone-100"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
           )}
 
-          {!loading && results.length === 0 && (
-            <p className="p-3 text-sm text-stone-500">No results found</p>
-          )}
+          {showSearchResults && (
+            <>
+              {(loading || isSkeletonCapture) && (
+                <Skeleton
+                  name="header-search-results"
+                  loading={loading || isSkeletonCapture}
+                  fallback={<SearchResultsSkeleton />}
+                  fixture={<SearchResultsSkeleton />}
+                >
+                  <div>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className="block w-full px-4 py-2 text-left text-sm text-stone-800"
+                      >
+                        Premium Wooden Chair
+                      </button>
+                    ))}
+                  </div>
+                </Skeleton>
+              )}
 
-          {!loading &&
-            results.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => handleResultClick(item.slug)}
-                className="block w-full px-4 py-2 text-left text-sm text-stone-800 transition hover:bg-stone-100"
-              >
-                {item.name}
-              </button>
-            ))}
+              {!loading && searchError && (
+                <p className="p-3 text-sm font-medium text-red-600">
+                  {searchError}
+                </p>
+              )}
+
+              {!loading && !searchError && results.length === 0 && (
+                <p className="p-3 text-sm text-stone-500">
+                  No matching products
+                </p>
+              )}
+
+              {!loading &&
+                !searchError &&
+                results.map((item, index) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onClick={() => openProductResult(item)}
+                    className={`block w-full px-4 py-2.5 text-left text-sm font-medium text-stone-800 transition hover:bg-stone-100 ${
+                      safeActiveIndex === index ? "bg-stone-100 text-stone-950" : ""
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+
+              {!loading && !searchError && hasQuery && (
+                <button
+                  type="button"
+                  onClick={() => submitSearch(null)}
+                  className="block w-full border-t border-stone-100 px-4 py-3 text-left text-sm font-semibold text-primary transition hover:bg-stone-50"
+                >
+                  View all results for "{query}"
+                </button>
+              )}
+            </>
+          )}
         </div>
       )}
     </div>
@@ -321,9 +579,14 @@ function MobileMenu({
   closeMenu,
   search,
   setSearch,
+  clearSearch,
   results,
   loading,
+  searchError,
+  recentSearches,
+  clearRecentSearches,
   handleSearch,
+  handleRecentSearchClick,
   handleResultClick,
 }) {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
@@ -338,9 +601,14 @@ function MobileMenu({
         <SearchBox
           search={search}
           setSearch={setSearch}
+          clearSearch={clearSearch}
           results={results}
           loading={loading}
+          searchError={searchError}
+          recentSearches={recentSearches}
+          clearRecentSearches={clearRecentSearches}
           handleSearch={handleSearch}
+          handleRecentSearchClick={handleRecentSearchClick}
           handleResultClick={handleResultClick}
         />
       </div>
@@ -393,8 +661,6 @@ function MobileMenu({
               >
                 Dining
               </Link>
-
-
             </div>
           )}
 

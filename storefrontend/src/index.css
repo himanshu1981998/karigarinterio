@@ -157,6 +157,29 @@
   .ki-image-surface {
     background: linear-gradient(135deg, #ece8df 0%, #f7f6f2 100%);
   }
+
+  .ki-marquee {
+    animation: ki-marquee 26s linear infinite;
+    width: max-content;
+  }
+}
+
+@keyframes ki-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ki-marquee {
+    animation: none;
+    transform: none;
+    width: auto;
+  }
 }
 
 

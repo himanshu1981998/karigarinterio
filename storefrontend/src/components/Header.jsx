@@ -216,8 +216,8 @@ const Header = () => {
             </div>
 
             <Link to="/" className="flex min-w-0 items-center gap-2 whitespace-nowrap">
-              <img src={logo} alt="Karigar Logo" className="h-8 w-8" />
-              <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-stone-950 sm:text-lg">
+              <img src={logo} alt="Karigar Logo" className="h-9 w-9 md:h-8 md:w-8" />
+              <span className="whitespace-nowrap text-base font-semibold tracking-tight text-stone-950 sm:text-lg">
                 कारीगर <span className="font-medium">interio</span>
               </span>
             </Link>

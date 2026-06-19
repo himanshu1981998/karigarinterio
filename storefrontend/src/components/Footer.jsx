@@ -29,7 +29,7 @@ const Footer = () => {
             {/* SOCIALS */}
             <div className="mt-5 flex items-center gap-4">
               <a
-                href="https://instagram.com/yourbrand"
+                href="https://www.instagram.com/karigarinterio?igsh=MTJyZ2JqcnZpb3hrcA=="
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"

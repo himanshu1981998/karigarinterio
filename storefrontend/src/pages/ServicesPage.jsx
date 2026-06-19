@@ -35,10 +35,31 @@ const servicesList = [
 const initialForm = {
   full_name: "",
   phone: "",
-  city: "",
   other_service: "",
   requirements: "",
 }
+
+const serviceNoticeItems = [
+  "Services available only in Jhunjhunu",
+  "Our team will get back to you within 24 hours",
+]
+
+const ServicesNoticeBanner = () => (
+  <div className="overflow-hidden bg-[#8B5E3C] text-white shadow-sm shadow-stone-950/10">
+    <div className="ki-marquee flex whitespace-nowrap py-2 text-xs font-semibold uppercase tracking-[0.16em] sm:py-2.5 sm:text-sm">
+      {[0, 1, 2, 3].map((group) => (
+        <div key={group} className="flex shrink-0 items-center gap-4 px-2 sm:gap-6">
+          {serviceNoticeItems.map((item) => (
+            <span key={`${group}-${item}`} className="flex items-center gap-4 sm:gap-6">
+              <span>{item}</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-white/65" />
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+)
 
 const ServicesPage = () => {
   const [selectedServices, setSelectedServices] = useState([])
@@ -74,6 +95,11 @@ const ServicesPage = () => {
     )
   }
 
+  const selectMobileService = (serviceId) => {
+    setSelectedServices((prev) => (prev.includes(serviceId) ? [] : [serviceId]))
+    setIsServiceDropdownOpen(false)
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -85,7 +111,7 @@ const ServicesPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!formData.full_name.trim() || !formData.phone.trim() || !formData.city.trim()) {
+    if (!formData.full_name.trim() || !formData.phone.trim()) {
       toast.error("Please fill all required details", {
         position: "bottom-center",
       })
@@ -105,7 +131,6 @@ const ServicesPage = () => {
       await createServiceEnquiry({
         full_name: formData.full_name.trim(),
         phone: formData.phone.trim(),
-        city: formData.city.trim(),
         selected_services: selectedServices,
         other_service: formData.other_service.trim(),
         requirements: formData.requirements.trim(),
@@ -126,7 +151,6 @@ const ServicesPage = () => {
         data?.detail ||
         data?.phone?.[0] ||
         data?.full_name?.[0] ||
-        data?.city?.[0] ||
         data?.non_field_errors?.[0] ||
         (typeof data === "string" ? data : null) ||
         "Failed to submit request"
@@ -145,6 +169,7 @@ const ServicesPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-100">
+      <ServicesNoticeBanner />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         <div className="rounded-3xl bg-white p-6 shadow-sm sm:p-8 lg:p-10">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#8B5E3C]">
@@ -179,13 +204,13 @@ const ServicesPage = () => {
                 <span className="min-w-0">
                   <span className="block text-sm font-semibold text-zinc-900">
                     {selectedServices.length > 0
-                      ? `${selectedServices.length} service${selectedServices.length > 1 ? "s" : ""} selected`
-                      : "Select services"}
+                      ? selectedServiceLabels[0]
+                      : "Select a service"}
                   </span>
                   <span className="mt-0.5 block truncate text-xs text-zinc-500">
                     {selectedServiceLabels.length > 0
-                      ? selectedServiceLabels.join(", ")
-                      : "Choose one or more services"}
+                      ? "Tap to change your selection"
+                      : "Choose one service"}
                   </span>
                 </span>
 
@@ -200,7 +225,7 @@ const ServicesPage = () => {
                 <div
                   id="mobile-service-options"
                   role="listbox"
-                  aria-multiselectable="true"
+                  aria-multiselectable="false"
                   className="absolute left-0 right-0 top-full z-20 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl"
                 >
                   {servicesList.map((service) => {
@@ -212,7 +237,7 @@ const ServicesPage = () => {
                         type="button"
                         role="option"
                         aria-selected={isActive}
-                        onClick={() => toggleService(service.id)}
+                        onClick={() => selectMobileService(service.id)}
                         className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
                           isActive
                             ? "bg-[#8B5E3C]/5 text-zinc-950"
@@ -220,14 +245,14 @@ const ServicesPage = () => {
                         }`}
                       >
                         <span
-                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
                             isActive
                               ? "border-[#8B5E3C] bg-[#8B5E3C]"
                               : "border-zinc-300 bg-white"
                           }`}
                         >
                           {isActive && (
-                            <span className="h-2 w-2 rounded-sm bg-white" />
+                            <span className="h-2 w-2 rounded-full bg-white" />
                           )}
                         </span>
                         <span className="text-sm font-medium">
@@ -247,7 +272,7 @@ const ServicesPage = () => {
                       <button
                         key={service.id}
                         type="button"
-                        onClick={() => toggleService(service.id)}
+                        onClick={() => setSelectedServices([])}
                         className="inline-flex items-center gap-1 rounded-full bg-[#8B5E3C]/10 px-2.5 py-1 text-xs font-medium text-[#7A5234]"
                       >
                         {service.label}
@@ -341,19 +366,6 @@ const ServicesPage = () => {
                   }
                   placeholder="Enter your phone number"
                   maxLength={10}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-700">
-                  City
-                </label>
-                <Input
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  placeholder="Enter your city"
                   required
                 />
               </div>

@@ -8,14 +8,10 @@ services:
     name: karigar-interio-backend
     runtime: python
     rootDir: backend
-    plan: starter
+    plan: free
     buildCommand: sh build.sh
     startCommand: sh start.sh
     autoDeploy: false
-    disk:
-      name: karigar-interio-media
-      mountPath: /opt/render/project/src/backend/media
-      sizeGB: 2
     envVars:
       - key: PYTHON_VERSION
         value: 3.14.2

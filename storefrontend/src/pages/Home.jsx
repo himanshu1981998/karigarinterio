@@ -4,7 +4,7 @@ import { fetchProducts } from "@/lib/productApi.js"
 import HomeCategories from "@/components/HomeCategories"
 import CustomBespokeSection from "@/components/CustomBespokeSection"
 import FeaturedCarousel from "@/components/FeaturedCarousel"
-import Footer from "@/components/Footer"
+import TestimonialsSection from "@/components/TestimonialsSection"
 import { Skeleton } from "boneyard-js/react"
 import {
   FeaturedCarouselFixture,
@@ -109,6 +109,8 @@ return (
         </Skeleton>
       )}
     </div>
+
+    <TestimonialsSection />
 
   </div>
 )

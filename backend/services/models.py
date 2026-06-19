@@ -24,7 +24,7 @@ class ServiceEnquiry(models.Model):
 
     full_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=15)
-    city = models.CharField(max_length=120)
+    city = models.CharField(max_length=120, blank=True, default="")
 
     selected_services = models.JSONField(default=list, blank=True)
     other_service = models.CharField(max_length=255, blank=True)

@@ -18,15 +18,16 @@ This project is set up for a split deployment:
 Render blueprint summary:
 
 - Web service root: `backend`
+- Plan: `free`
 - Build command: `sh build.sh`
 - Start command: `sh start.sh`
-- Persistent disk mount: `/opt/render/project/src/backend/media`
+- Render Free web services do not include a persistent disk, so uploaded media can disappear after restarts. Use the bundled seed media for now and move uploads to Cloudinary or Supabase Storage before serious production use.
 
 After the first deploy, set these values in Render:
 
-- `ALLOWED_HOSTS=<your-render-backend-host>`
-- `CORS_ALLOWED_ORIGINS=<your-vercel-frontend-url>`
-- `CSRF_TRUSTED_ORIGINS=<your-render-backend-url>,<your-vercel-frontend-url>`
+- `ALLOWED_HOSTS=karigarinterio.onrender.com`
+- `CORS_ALLOWED_ORIGINS=https://karigar-interio.vercel.app`
+- `CSRF_TRUSTED_ORIGINS=https://karigarinterio.onrender.com,https://karigar-interio.vercel.app`
 - `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`
 
 ## Frontend on Vercel
@@ -36,7 +37,8 @@ Use `storefrontend` as the root directory.
 - Framework: Vite
 - Build command: `npm run build`
 - Output directory: `dist`
-- Env var: `VITE_BACKEND_BASE_API=https://<your-render-backend-host>/api`
+- Env var: `VITE_BACKEND_BASE_API=https://karigarinterio.onrender.com/api`
+- Direct routes such as `/services`, `/orders`, and `/product/<slug>` are handled by the SPA rewrite in `storefrontend/vercel.json`.
 
 ## Copy Catalog Only
 
@@ -59,13 +61,13 @@ Import into production:
 psql "$DATABASE_URL" < catalog-data.sql
 ```
 
-Copy media for product and category images to the Render disk-backed media folder:
+Copy media for product and category images to the Render media folder:
 
 ```bash
 tar -czf catalog-media.tar.gz backend/media/categories backend/media/products
 ```
 
-Upload and extract that archive inside the backend service environment so the files land under `MEDIA_ROOT`.
+Upload and extract that archive inside the backend service environment so the files land under `MEDIA_ROOT`. On Render Free this storage is not persistent, so prefer the bundled seed media or external object storage.
 
 ## Seed Catalog On Render
 

@@ -33,6 +33,16 @@ services:
         value: /media/
       - key: SERVE_MEDIA
         value: true
+      - key: USE_CLOUDINARY_MEDIA
+        value: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_FOLDER
+        value: karigar-interio
       - key: USE_X_FORWARDED_HOST
         value: true
       - key: SECURE_SSL_REDIRECT

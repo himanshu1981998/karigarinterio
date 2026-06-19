@@ -28,6 +28,8 @@ After the first deploy, set these values in Render:
 - `ALLOWED_HOSTS=karigarinterio.onrender.com`
 - `CORS_ALLOWED_ORIGINS=https://karigar-interio.vercel.app`
 - `CSRF_TRUSTED_ORIGINS=https://karigarinterio.onrender.com,https://karigar-interio.vercel.app`
+- `USE_CLOUDINARY_MEDIA=true`
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
 - `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`
 
 ## Frontend on Vercel
@@ -67,7 +69,13 @@ Copy media for product and category images to the Render media folder:
 tar -czf catalog-media.tar.gz backend/media/categories backend/media/products
 ```
 
-Upload and extract that archive inside the backend service environment so the files land under `MEDIA_ROOT`. On Render Free this storage is not persistent, so prefer the bundled seed media or external object storage.
+Upload and extract that archive inside the backend service environment so the files land under `MEDIA_ROOT`. On Render Free this storage is not persistent, so keep the bundled seed media and use Cloudinary for new dashboard uploads.
+
+## Cloudinary Media
+
+New product and category images uploaded from the dashboard are stored in Cloudinary when `USE_CLOUDINARY_MEDIA=true`. Existing bundled seed images still load from `/media/...`, so old catalog images continue to work.
+
+After enabling Cloudinary on Render, re-upload any images that currently return `404` because Render Free already lost those local files.
 
 ## Seed Catalog On Render
 

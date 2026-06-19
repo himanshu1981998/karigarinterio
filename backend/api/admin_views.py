@@ -22,6 +22,7 @@ from orders.serializers import (
 from orders.notifications import notify_customer_order_event
 from orders.views import restore_stock_for_order
 from products.models import Category, Product, ProductImage, ProductSpecification
+from products.media import get_media_url
 from products.serializers import (
     CategorySerializer,
     ProductImageSerializer,
@@ -82,9 +83,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
         image_obj = obj.images.filter(is_primary=True).first() or obj.images.first()
 
         if image_obj and image_obj.image:
-            if request:
-                return request.build_absolute_uri(image_obj.image.url)
-            return image_obj.image.url
+            return get_media_url(image_obj.image, request)
         return None
 
     def validate(self, attrs):
@@ -184,8 +183,7 @@ class AdminCategorySerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         request = self.context.get("request")
 
-        if instance.image and request:
-            data["image"] = request.build_absolute_uri(instance.image.url)
+        data["image"] = get_media_url(instance.image, request)
 
         return data
 

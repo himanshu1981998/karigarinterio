@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Category, Product, ProductImage, ProductSpecification
+from .media import get_media_url
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -11,11 +12,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         request = self.context.get("request")
-        if obj.image and request:
-            return request.build_absolute_uri(obj.image.url)
-        if obj.image:
-            return obj.image.url
-        return None
+        return get_media_url(obj.image, request)
 
 class ProductImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -26,11 +23,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         request = self.context.get("request")
-        if obj.image and request:
-            return request.build_absolute_uri(obj.image.url)
-        if obj.image:
-            return obj.image.url
-        return None
+        return get_media_url(obj.image, request)
 
 
 class ProductSpecificationSerializer(serializers.ModelSerializer):
@@ -68,9 +61,7 @@ class ProductListSerializer(serializers.ModelSerializer):
         image_obj = obj.images.filter(is_primary=True).first() or obj.images.first()
 
         if image_obj and image_obj.image:
-            if request:
-                return request.build_absolute_uri(image_obj.image.url)
-            return image_obj.image.url
+            return get_media_url(image_obj.image, request)
 
         return None
 

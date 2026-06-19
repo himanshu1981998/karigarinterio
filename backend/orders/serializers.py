@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Cart, CartItem, Order, OrderItem
+from products.media import get_media_url
 from products.models import Product
 
 
@@ -38,9 +39,7 @@ class CartProductSerializer(serializers.ModelSerializer):
         image_obj = obj.images.filter(is_primary=True).first() or obj.images.first()
 
         if image_obj and image_obj.image:
-            if request:
-                return request.build_absolute_uri(image_obj.image.url)
-            return image_obj.image.url
+            return get_media_url(image_obj.image, request)
         return None
 
 

@@ -154,10 +154,19 @@ STATIC_ROOT = config("STATIC_ROOT", default=str(BASE_DIR / "staticfiles"))
 MEDIA_URL = config("MEDIA_URL", default='/media/')
 MEDIA_ROOT = Path(config("MEDIA_ROOT", default=str(BASE_DIR / "media")))
 SERVE_MEDIA = config("SERVE_MEDIA", default=True, cast=bool)
+USE_CLOUDINARY_MEDIA = config("USE_CLOUDINARY_MEDIA", default=False, cast=bool)
+CLOUDINARY_CLOUD_NAME = config("CLOUDINARY_CLOUD_NAME", default="")
+CLOUDINARY_API_KEY = config("CLOUDINARY_API_KEY", default="")
+CLOUDINARY_API_SECRET = config("CLOUDINARY_API_SECRET", default="")
+CLOUDINARY_FOLDER = config("CLOUDINARY_FOLDER", default="karigar-interio")
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": (
+            "storebackend.storage.CloudinaryMediaStorage"
+            if USE_CLOUDINARY_MEDIA
+            else "django.core.files.storage.FileSystemStorage"
+        ),
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
